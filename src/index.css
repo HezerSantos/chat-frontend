@@ -1,9 +1,82 @@
+@font-face {
+  font-family: mainText;
+  src: url('./assets/fonts/PlayfairDisplay-Regular.ttf');
+}
+
+@font-face {
+  font-family: subText;
+  src: url('./assets/fonts/AveriaSerifLibre-Regular.ttf');
+}
+
 *{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+#root{
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+:root{
+  --pri__color: #061324;
+  --sec__color: #0E1F36;
+  --auth__gradient: #17437A;
+  --pri__inter__color: #17437A;
+  --sec__inter__color: #112E53;
+  --pri__highlight: #0D0E16;
+  --pri__highlight__hover: #1e2133;
+  --sec__highlight: #0E1F36;
+  --offset__color: #B79855;
+  --error: #A91B1B;
+  --shadow: rgba(0, 0, 0, 0.5);
+  --pri__text: white;
+  --sec__text: #B79855;
+
+}
 button{
   cursor: pointer;
+  border: none;
+}
+a{
+  text-decoration: none;
+  color: var(--pri__text);
+}
+
+a:hover{
+  text-decoration: underline;
+}
+
+body{
+  background-color: var(--pri__color);
+}
+
+.error{
+  color: var(--error);
+  font-weight: 900;
+}
+
+.error__border{
+  border: 2px solid var(--error) !important
+}
+
+.error__border:focus{
+  outline: none !important
+}
+
+.loading{
+  fill: white;
+  height: 75px;
+  width: 75px;
+  animation: loading .5s ease-in-out infinite;
+}
+
+@keyframes loading{
+  0%{
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(360deg);
+  }
 }

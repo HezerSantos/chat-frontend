@@ -1,19 +1,21 @@
 import { useState, useEffect } from 'react'
 import axios from "axios"
-import { Navigate } from "react-router-dom"
-import '../src/assets/styles/App.css'
+import { Navigate, Outlet } from "react-router-dom"
 
 function App() {
-    if(process.env.NODE_ENV === "production"){
-        useEffect(() => {
-            console.log = () => {};
-            console.warn = () => {};
-            console.error = () => {};
-            console.info = () => {};
-            console.debug = () => {};
-        }, [])
+    if(import.meta.env.VITE_NODE_ENV === "production"){
+        // useEffect(() => {
+        //     console.log = () => {};
+        //     console.warn = () => {};
+        //     console.error = () => {};
+        //     console.info = () => {};
+        //     console.debug = () => {};
+        // }, [])
     }
     axios.defaults.withCredentials = true;
+    return(
+        <Outlet />
+    )
 }
 
 export default App

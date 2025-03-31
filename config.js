@@ -7,8 +7,8 @@ const config = {
     }
   };
 
-const currentConfig = process.env.NODE_ENV === 'production'
+const currentConfig = import.meta.env.VITE_NODE_ENV === 'production'
 ? config.production
 : config.development;
 
-export default currentConfig;
+export default currentConfig.apiUrl;
