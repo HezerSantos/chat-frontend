@@ -1,0 +1,135 @@
+.dashboard__main{
+    position: relative;
+    height: 100svh;
+    display: grid;
+    grid-template-columns: 20rem 1fr;
+    transition: width 1.5s ease;
+    min-width: 20rem;
+}
+
+.dashboard__main__toggle{
+    grid-template-columns: 5rem 1fr;
+}
+
+
+.dashboard__nav{
+    position: absolute;
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    background:linear-gradient(to bottom, var(--sec__color) 0%, var(--sec__inter__color) 100%);
+    transition: width 1.5s ease-in-out;
+    container-type: inline-size;
+    container-name: dashboard__nav;
+    height: 100svh;
+    width: 20rem;
+    transition: width 1.5s ease;
+}
+
+.toggle__dashboard{
+    width: 5rem;
+}
+
+.dashboard__nav > *{
+    align-self: center;
+}
+
+.dashboard__nav > ul, .dashboard__nav > div{
+    height: calc(100% - 3rem);
+}
+
+.dashboard__nav > ul{
+    border-right: 0.05rem solid var(--offset__color);
+    display: grid;
+    grid-template-rows: repeat(5, 5rem) 1fr 5rem;
+    list-style-type: none;
+}
+
+.dashboard__nav > ul > *{
+    align-self: center;
+    justify-self: center;
+}
+
+.dashboard__nav__icons{
+    width: 50px;
+    height: 50px;
+    border: .05rem solid var(--offset__color);
+    border-radius: 100%;
+    cursor: pointer;
+}
+
+.dashboard__nav__icons:hover path{
+    fill: var(--offset__color);
+}
+
+.dashboard__nav__icons path{
+    fill: var(--pri__highlight);
+}
+
+.dashboard__nav > ul li:last-child{
+    grid-row: 7 / 8;
+}
+
+.dashboard__nav > div{
+    display: grid;
+    grid-template-rows: 5rem 15rem 1fr 5rem
+}
+
+.dashboard__nav__toggle__button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    height: 100%;
+    margin-left: auto;
+}
+.dashboard__nav__toggle{
+    fill: white;
+    height: 2rem;
+    width: 2rem;
+    transition: 1.5s ease-in-out;
+}
+
+.dashboard__button__toggle svg{
+    transform: rotate(-180deg);
+}
+
+.dashboard__nav > div > ul{
+    align-self: center;
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.dashboard__nav > div > ul li{
+    cursor: pointer;
+    padding: 1rem;
+    font-family: mainText;
+    color: var(--sec__text);
+   
+}
+
+.dashboard__nav > div > ul li:hover{
+    background-color: var(--pri__highlight);
+}
+
+.dashboard__group__options{
+    grid-row: 4 / 5;
+}
+
+
+@container (max-width: 12rem){
+    .dashboard__nav > div{
+        display: none;
+    }
+    .dashboard__nav > ul{
+        border: none;
+    }
+}
+
+@media (max-width: 1000px){
+    .dashboard__main{
+        grid-template-columns: 5rem 1fr;
+    }
+}
