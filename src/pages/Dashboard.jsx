@@ -7,6 +7,9 @@ const Dashboard = () => {
         <>
             <main className='dashboard__main' ref={dashboardMain}>
                 <DashboardNav dashboardMain={dashboardMain}/>
+                <section className='dashboard__messages'>
+                    <input type="text" />
+                </section>
             </main>
         </>
     )
