@@ -18,7 +18,20 @@ const toggleNavBar = (e, toggleButton, dashboardMain, dashboardNav) => {
 const handleNavigate = (e, route, navigate) => {
     navigate(route)
 }
-const DashboardNav = ({dashboardMain, messageGroup = false, addGroup = false, friends = false, notifications = false, settings = false}) => {
+
+const handleSettings = (setSubSettingsFlag) => {
+    setSubSettingsFlag(prev => !prev)
+}
+const DashboardNav = ({
+    dashboardMain, 
+    messageGroup = false, 
+    addGroup = false, 
+    friends = false, 
+    notifications = false, 
+    settings = false,
+    subSettingsFlag,
+    setSubSettingsFlag
+}) => {
     const toggleButton = useRef(null)
     const dashboardNav = useRef(null)
     const navigate = useNavigate()
@@ -65,17 +78,42 @@ const DashboardNav = ({dashboardMain, messageGroup = false, addGroup = false, fr
                     </li>
                 </ul>
                 <div>
-                    <div>
-
-                    </div>
-                    <ul>
-                        <li>Group One</li>
-                        <li>Group Two</li>
-                        <li>Group Three</li>
-                    </ul>
-                    <ul className="dashboard__group__options">
-                        <li>Group Options</li>
-                    </ul>
+                    {messageGroup && (
+                        <>
+                            <div>
+                            </div>
+                            <ul>
+                                <li>
+                                    <button>Group One</button>
+                                </li>
+                                <li>
+                                    <button>Group Two</button>
+                                </li>
+                                <li>
+                                    <button>Group Three</button>
+                                </li>
+                            </ul>
+                            <ul className="dashboard__group__options">
+                                <li>
+                                    <button>Group Options</button>
+                                </li>
+                            </ul>
+                        </>
+                    )}
+                    {settings && (
+                        <>
+                            <div>
+                            </div>
+                            <ul>
+                                <li className={!subSettingsFlag? "dashboard__sub__selected" : ''}>
+                                    <button onClick={() => handleSettings(setSubSettingsFlag)}>Change Credentials</button>
+                                </li>
+                                <li className={subSettingsFlag? "dashboard__sub__selected" : ''}>
+                                    <button onClick={() => handleSettings(setSubSettingsFlag)}>Logout</button>
+                                </li>
+                            </ul>
+                        </>
+                    )}
                 </div>
             </nav>
         </>
