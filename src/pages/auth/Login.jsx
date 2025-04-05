@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import '../assets/styles/Auth.css'
+import '../../assets/styles/Auth.css'
 import { Link, useNavigate } from "react-router-dom"
 import axios from 'axios'
-import api from '../../config'
+import api from '../../../config'
 import { AiOutlineLoading } from "react-icons/ai";
 
 const login = async(e, setLoginError, setIsLoading, navigate) => {
