@@ -1,32 +1,22 @@
 import { useRef, useState } from 'react'
 import '../assets/styles/Dashboard.css'
 import DashboardNav from '../components/dashboard/DashboardNav'
-import { IoMdSend } from "react-icons/io";
-import MessageBlock from '../components/dashboard/MessageBlock';
+import MessageGroup from '../components/dashboard/MessageGroup'
 
-const handleInput = (e, setInput) => {
-    setInput(e.target.value)
-}
 const Dashboard = () => {
-    const [ message, setMessage ] = useState("")
     const dashboardMain = useRef(null)
+    const [ dashboardFlags, setDashboardFlags ] = useState(new Map([
+        ['messageBoard', true],
+        ['addGroup', false],
+        ['friends', false],
+        ['notifications', false],
+        ['setting', false]
+    ]))
     return(
         <>
             <main className='dashboard__main' ref={dashboardMain}>
-                <DashboardNav dashboardMain={dashboardMain}/>
-                <section className='dashboard__messages'>
-                    <form>
-                        <textarea 
-                            name="" 
-                            id=""
-                            onChange={(e) => handleInput(e, setMessage)}
-                            value={message}  
-                            className='dashboard__input'
-                        ></textarea>
-                        <button><IoMdSend /></button>
-                    </form>
-                    <MessageBlock />
-                </section>
+                <DashboardNav dashboardMain={dashboardMain} setDashboardFlags={setDashboardFlags}/>
+                <MessageGroup />
             </main>
         </>
     )

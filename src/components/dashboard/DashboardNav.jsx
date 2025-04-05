@@ -14,7 +14,7 @@ const toggleNavBar = (e, toggleButton, dashboardMain, dashboardNav) => {
 }
 
 
-const DashboardNav = ({dashboardMain}) => {
+const DashboardNav = ({dashboardMain, setDashboardFlags}) => {
     const toggleButton = useRef(null)
     const dashboardNav = useRef(null)
     return(
@@ -34,7 +34,9 @@ const DashboardNav = ({dashboardMain}) => {
                         </button>
                     </li>
                     <li>
-                        <CgProfile className="dashboard__nav__icons"/>
+                        <button className="dashboard__nav__button">
+                            <CgProfile className="dashboard__nav__icons"/>
+                        </button>
                     </li>
                     <li>
                         <IoMdAddCircle className="dashboard__nav__icons"/>

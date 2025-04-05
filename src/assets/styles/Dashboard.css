@@ -24,6 +24,7 @@
     width: 20rem;
     transition: width 1.5s ease;
     min-height: fit-content;
+    z-index: 2;
 }
 
 .toggle__dashboard{
@@ -46,8 +47,11 @@
 }
 
 .dashboard__nav > ul > *{
-    align-self: center;
-    justify-self: center;
+    width: 5rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .dashboard__nav__icons{
@@ -82,8 +86,9 @@
     justify-content: center;
     background-color: transparent;
     border: none;
-    height: 100%;
+    width: 100%;
     margin-left: auto;
+    transition: 1.5s ease-in-out;
 }
 .dashboard__nav__toggle{
     fill: white;
@@ -109,7 +114,6 @@
     padding: 1rem;
     font-family: mainText;
     color: var(--sec__text);
-   
 }
 
 .dashboard__nav > div > ul li:hover{
@@ -118,6 +122,12 @@
 
 .dashboard__group__options{
     grid-row: 4 / 5;
+}
+
+.dashboard__nav__button{
+    width: 100%;
+    background-color: var(--offset__color);
+    transition: 1.5s ease-in-out;
 }
 
 
@@ -152,8 +162,16 @@
     .dashboard__nav{
         grid-template-columns: 3rem 1fr;
     }
+
+    .dashboard__nav > ul > *{
+        width: 3rem;
+    }
     .toggle__dashboard{
         width: 3rem;
+    }
+    .dashboard__nav__button{
+        width: 3rem;
+        transition: 1.5s ease-in-out;
     }
 }
 
@@ -171,7 +189,7 @@
 .dashboard__messages > form{
     position: relative;
     width: 100%;
-    z-index: -1;
+    z-index: 1;
 }
 
 .dashboard__input{
