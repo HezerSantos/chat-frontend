@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useContext } from 'react'
 import '../../assets/styles/Auth.css'
 import { Link, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import api from '../../../config'
 import { AiOutlineLoading } from "react-icons/ai";
+import { AuthContext } from '../../context/AuthContext'
 
-const login = async(e, setLoginError, setIsLoading, navigate) => {
+const login = async(e, setLoginError, setIsLoading, navigate, userLogin) => {
     e.preventDefault()
     try{
         setIsLoading(true)
@@ -15,6 +16,8 @@ const login = async(e, setLoginError, setIsLoading, navigate) => {
         })
         console.log(res)
         setIsLoading(false)
+        userLogin()
+        navigate('/dashboard/message-groups')
     } catch(err){
         const errors = err.response.data.errors[0]
         setLoginError(errors)
@@ -27,6 +30,7 @@ const handleInput = (e, setInput) => {
 }
 
 const Login = () => {
+    const { isAuthenticated, userLogin, userLogout } = useContext(AuthContext)
     const [ username, setUsername ] = useState("")
     const [ password, setPassword ] = useState("")
     const [ loginError, setLoginError ] = useState(null)
@@ -57,7 +61,7 @@ const Login = () => {
             <section className='index__form__container'>
                     <form 
                         className='index__auth__form'
-                        onSubmit={(e) => login(e, setLoginError, setIsLoading, navigate)}
+                        onSubmit={(e) => login(e, setLoginError, setIsLoading, navigate, userLogin)}
                     >
                     {!isLoading? (
                         <>

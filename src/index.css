@@ -72,6 +72,13 @@ body{
   animation: loading .5s ease-in-out infinite;
 }
 
+.loading__screen{
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @keyframes loading{
   0%{
     transform: rotate(0deg);

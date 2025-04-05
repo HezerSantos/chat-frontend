@@ -1,0 +1,44 @@
+.add__group{
+    padding: 5%;
+    grid-column: 2 / 3;
+}
+
+.add__group > div{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.add__group > div > label{
+    color: var(--pri__text);
+    font-family: mainText;
+}
+
+.add__group > div > div > input{
+    width: 50%;
+    min-width: 15rem;
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    background-color: var(--pri__inter__color);
+    border: none;
+    font-size: 1rem;
+    padding: .5rem 0 .5rem 1rem;
+    color: white;
+    font-family: mainText;
+    border-radius: .5rem;
+    box-shadow: 0 5px 5px var(--shadow);
+}
+
+.add__group > div > div > input:focus{
+    outline: 1px solid var(--offset__color);
+}
+
+.add__group > div > div > button{
+    width: 5rem;
+    padding: .5rem 1rem .5rem 1rem;
+    background-color: var(--offset__color);
+    color: white;
+    font-family: mainText;
+    border-radius: .5rem;
+    font-size: 1rem;
+}
