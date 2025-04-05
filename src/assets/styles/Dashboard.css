@@ -126,8 +126,12 @@
 
 .dashboard__nav__button{
     width: 100%;
-    background-color: var(--offset__color);
     transition: 1.5s ease-in-out;
+    background-color: transparent;
+}
+
+.dashboard__nav__button__select{
+    background-color: var(--offset__color);
 }
 
 
