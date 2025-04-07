@@ -17,7 +17,7 @@ const login = async(e, setLoginError, setIsLoading, navigate, userLogin) => {
         console.log(res)
         setIsLoading(false)
         userLogin()
-        navigate('/dashboard/message-groups')
+        navigate('/dashboard/groups')
     } catch(err){
         const errors = err.response.data.errors[0]
         setLoginError(errors)

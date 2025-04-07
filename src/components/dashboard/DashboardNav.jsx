@@ -26,10 +26,17 @@ const handleSettings = (setSubSettingsFlag) => {
     setSubSettingsFlag(prev => !prev)
 }
 
-const getUserGroups = async(setUserGroups) => {
+const getUserGroups = async(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty) => {
     try{
         const res = await axios.get(`${api}/api/groups`)
+        if(res.data.userGroups.length !== 0){
+            setMessageGroup(<MessageGroup key={res.data.userGroups[0].id} groupId={res.data.userGroups[0].id}/>)
+            setSelectedGroupId(res.data.userGroups[0].id)
+        }
         setUserGroups(res.data.userGroups)
+        setJoinedGroups(res.data.joinedGroups)
+        setIsEmpty(false)
+        console.log(res)
     } catch (e){
         console.error(e)
     }
@@ -61,8 +68,12 @@ const DashboardNav = ({
     const [selectedGroupId, setSelectedGroupId] = useState(null);
 
     const [ userGroups, setUserGroups ] = useState(null)
+    const [ joinedGroups, setJoinedGroups ] = useState(null)
+
+    const [ isEmpty, setIsEmpty ] = useState(true)
     const navigate = useNavigate()
 
+    const groupList = useRef(null)
 
     const handleGroupClick = (e, groupId, setMessageGroup) => {
         selectedGroup.current?.classList.remove("dashboard__sub__selected")
@@ -73,13 +84,13 @@ const DashboardNav = ({
 
     useEffect(() => {
         if(messageGroup){
-            getUserGroups(setUserGroups)
+            getUserGroups(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty)
         }
     }, [])
 
+
     useEffect(() => {
         selectedGroup.current?.classList.add("dashboard__sub__selected")
-        console.log(selectedGroup)
 
     }, [selectedGroupId])
 
@@ -128,23 +139,44 @@ const DashboardNav = ({
                     </li>
                 </ul>
                 <div>
-                    {messageGroup && (
+                    {messageGroup &&(
                         <>
                             <div>
                             </div>
-                            <ul>
+                            <ul ref={groupList}>
                                 {!userGroups? (
                                     <li className="loading__center"><AiOutlineLoading className="loading"/></li>
                                 ) : (
-                                    userGroups.map((group, index) => {
-                                        return(
-                                            <li key={group.id} ref={group.id === selectedGroupId ? selectedGroup : null}>
-                                                <button onClick={(e) => handleGroupClick(e, group.id, setMessageGroup)}>{group.name}</button>
-                                            </li>
-                                        )
-                                    })
+                                    <>
+                                        <h1>Owned Groups</h1>
+                                        {userGroups.map((group, index) => {
+                                            return(
+                                                <li key={group.id} ref={group.id === selectedGroupId ? selectedGroup : null}>
+                                                    <button onClick={(e) => handleGroupClick(e, group.id, setMessageGroup)}>{group.name}</button>
+                                                </li>
+                                            )
+                                        })}
+                                    </>
                                 )}
                             </ul>
+                            <div className="dashboard__joined__groups">
+                                <ol>
+                                    {!joinedGroups? (
+                                        <></>
+                                    ) : (
+                                        <>
+                                            <li><h1>Joined Groups</h1></li>
+                                            {joinedGroups.map((group, index) => {
+                                                return(
+                                                    <li key={group.groupId} ref={group.groupId === selectedGroupId ? selectedGroup : null}>
+                                                        <button onClick={(e) => handleGroupClick(e, group.groupId, setMessageGroup)}>{group.name}</button>
+                                                    </li>
+                                                )
+                                            })}
+                                        </>
+                                    )}
+                                </ol>
+                            </div>
                             <ul className="dashboard__group__options">
                                 <li>
                                     <button>Group Options</button>

@@ -16,7 +16,6 @@ const handleSubmit = async(e, groupId, setMessage) => {
         })
 
         setMessage("")
-        console.log(res)
     } catch(e){
         console.error(e)
     }
