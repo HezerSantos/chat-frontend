@@ -50,7 +50,7 @@ a:hover{
 }
 
 body{
-  background-color: var(--pri__color);
+  background: linear-gradient(to bottom, var(--auth__gradient) 0%, var(--pri__color) 100%);
 }
 
 .error{

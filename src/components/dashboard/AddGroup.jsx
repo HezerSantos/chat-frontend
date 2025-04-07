@@ -13,7 +13,6 @@ const handleSubmit = async(e, setGroupName, setIsLoading, setErrors) => {
         })
 
         setGroupName("")
-        console.log(res)
         setIsLoading(false)
         setErrors(null)
     } catch(e){
@@ -31,9 +30,6 @@ const AddGroup = () => {
     const [isLoading, setIsLoading ] = useState(false)
     const [ errors, setErrors ] = useState(null)
 
-    useEffect(() => {
-        console.log(errors)
-    }, [errors])
     return(
         <>
             {!isLoading? (

@@ -5,20 +5,24 @@ import { IoIosNotifications } from "react-icons/io";
 import { IoMdSettings } from "react-icons/io";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { BiMessageRounded } from "react-icons/bi";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import api from '../../../config'
 import { AiOutlineLoading } from "react-icons/ai";
 import MessageGroup from "./MessageGroup";
+import { AuthContext } from "../../context/AuthContext";
 const toggleNavBar = (e, toggleButton, dashboardMain, dashboardNav) => {
     toggleButton.current.classList.toggle('dashboard__button__toggle')
     dashboardMain.current.classList.toggle('dashboard__main__toggle')
     dashboardNav.current.classList.toggle('toggle__dashboard')
 }
 
-const handleNavigate = (e, route, navigate) => {
+const handleNavigate = (e, route, navigate, ws) => {
+    if(ws){
+        ws.close()
+    }
     navigate(route)
 }
 
@@ -36,7 +40,6 @@ const getUserGroups = async(setUserGroups, setMessageGroup, setSelectedGroupId, 
         setUserGroups(res.data.userGroups)
         setJoinedGroups(res.data.joinedGroups)
         setIsEmpty(false)
-        console.log(res)
     } catch (e){
         console.error(e)
     }
@@ -61,6 +64,7 @@ const DashboardNav = ({
     setSubSettingsFlag,
     setMessageGroup = null,
 }) => {
+    const { ws } = useContext(AuthContext)
     const toggleButton = useRef(null)
     const dashboardNav = useRef(null)
 
@@ -113,27 +117,27 @@ const DashboardNav = ({
                         </button>
                     </li>
                     <li>
-                        <button onClick={(e) => handleNavigate(e, '/dashboard/groups', navigate)} className={`dashboard__nav__button ${messageGroup? 'dashboard__nav__button__select' : ''}`}>
+                        <button onClick={(e) => handleNavigate(e, '/dashboard/groups', navigate, ws)} className={`dashboard__nav__button ${messageGroup? 'dashboard__nav__button__select' : ''}`}>
                             <BiMessageRounded className="dashboard__nav__icons"/>
                         </button>
                     </li>
                     <li>
-                        <button onClick={(e) => handleNavigate(e, '/dashboard/add-groups', navigate)} className={`dashboard__nav__button ${addGroup? 'dashboard__nav__button__select' : ''}`}>
+                        <button onClick={(e) => handleNavigate(e, '/dashboard/add-groups', navigate, ws)} className={`dashboard__nav__button ${addGroup? 'dashboard__nav__button__select' : ''}`}>
                             <IoMdAddCircle className="dashboard__nav__icons"/>
                         </button>
                     </li>
                     <li>
-                        <button onClick={(e) => handleNavigate(e, '/dashboard/friends', navigate)} className={`dashboard__nav__button ${friends? 'dashboard__nav__button__select' : ''}`}>
+                        <button onClick={(e) => handleNavigate(e, '/dashboard/friends', navigate, ws)} className={`dashboard__nav__button ${friends? 'dashboard__nav__button__select' : ''}`}>
                             <FaUserFriends className="dashboard__nav__icons" />
                         </button>
                     </li>
                     <li>
-                        <button onClick={(e) => handleNavigate(e, '/dashboard/notifications', navigate)} className={`dashboard__nav__button  ${notifications? 'dashboard__nav__button__select' : ''}`}>
+                        <button onClick={(e) => handleNavigate(e, '/dashboard/notifications', navigate, ws)} className={`dashboard__nav__button  ${notifications? 'dashboard__nav__button__select' : ''}`}>
                             <IoIosNotifications className="dashboard__nav__icons"/>
                         </button>
                     </li>
                     <li>
-                        <button onClick={(e) => handleNavigate(e, '/dashboard/settings', navigate)} className={`dashboard__nav__button ${settings? 'dashboard__nav__button__select' : ''}`}>
+                        <button onClick={(e) => handleNavigate(e, '/dashboard/settings', navigate, ws)} className={`dashboard__nav__button ${settings? 'dashboard__nav__button__select' : ''}`}>
                             <IoMdSettings className="dashboard__nav__icons"/>
                         </button>
                     </li>

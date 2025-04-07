@@ -7,7 +7,8 @@ const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [ isAuthLoading, setIsAuthLoading ] = useState(false)
     const [ userId, setUserId ] = useState(null)
-
+    const [ username, setUsername ] = useState(null)
+    const [ ws, setWs ] = useState(null)
     const userLogin = () => setIsAuthenticated(true);
     const userLogout = () => setIsAuthenticated(false);
     
@@ -17,6 +18,7 @@ const AuthProvider = ({ children }) => {
         // console.log(res);
         console.log("Reauth")
         setUserId(res.data.id)
+        setUsername(res.data.username)
         userLogin(); 
       } catch (error) {
         userLogout(); 
@@ -25,7 +27,7 @@ const AuthProvider = ({ children }) => {
       }
     };
     return (
-      <AuthContext.Provider value={{ isAuthenticated, userLogin, userLogout, getRefresh, isAuthLoading, setIsAuthLoading, userId }}>
+      <AuthContext.Provider value={{ isAuthenticated, userLogin, userLogout, getRefresh, isAuthLoading, setIsAuthLoading, userId, username, ws, setWs }}>
         {children}
       </AuthContext.Provider>
     );
