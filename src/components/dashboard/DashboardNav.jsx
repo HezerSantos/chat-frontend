@@ -5,10 +5,13 @@ import { IoIosNotifications } from "react-icons/io";
 import { IoMdSettings } from "react-icons/io";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { BiMessageRounded } from "react-icons/bi";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
+import api from '../../../config'
+import { AiOutlineLoading } from "react-icons/ai";
+import MessageGroup from "./MessageGroup";
 const toggleNavBar = (e, toggleButton, dashboardMain, dashboardNav) => {
     toggleButton.current.classList.toggle('dashboard__button__toggle')
     dashboardMain.current.classList.toggle('dashboard__main__toggle')
@@ -22,6 +25,24 @@ const handleNavigate = (e, route, navigate) => {
 const handleSettings = (setSubSettingsFlag) => {
     setSubSettingsFlag(prev => !prev)
 }
+
+const getUserGroups = async(setUserGroups) => {
+    try{
+        const res = await axios.get(`${api}/api/groups`)
+        setUserGroups(res.data.userGroups)
+    } catch (e){
+        console.error(e)
+    }
+}
+
+const getMessageGroup = async(e, groupId, setMessageGroup) => {
+    try{
+        setMessageGroup(<MessageGroup key={groupId} groupId={groupId}/>)
+    } catch(e){
+        console.error(e)
+    }
+}
+
 const DashboardNav = ({
     dashboardMain, 
     messageGroup = false, 
@@ -30,11 +51,40 @@ const DashboardNav = ({
     notifications = false, 
     settings = false,
     subSettingsFlag,
-    setSubSettingsFlag
+    setSubSettingsFlag,
+    setMessageGroup = null,
 }) => {
     const toggleButton = useRef(null)
     const dashboardNav = useRef(null)
+
+    const selectedGroup = useRef(null)
+    const [selectedGroupId, setSelectedGroupId] = useState(null);
+
+    const [ userGroups, setUserGroups ] = useState(null)
     const navigate = useNavigate()
+
+
+    const handleGroupClick = (e, groupId, setMessageGroup) => {
+        selectedGroup.current?.classList.remove("dashboard__sub__selected")
+        setSelectedGroupId(groupId);
+        getMessageGroup(e, groupId, setMessageGroup);
+    };
+
+
+    useEffect(() => {
+        if(messageGroup){
+            getUserGroups(setUserGroups)
+        }
+    }, [])
+
+    useEffect(() => {
+        selectedGroup.current?.classList.add("dashboard__sub__selected")
+        console.log(selectedGroup)
+
+    }, [selectedGroupId])
+
+
+
     return(
         <>
             <nav 
@@ -52,7 +102,7 @@ const DashboardNav = ({
                         </button>
                     </li>
                     <li>
-                        <button onClick={(e) => handleNavigate(e, '/dashboard/message-groups', navigate)} className={`dashboard__nav__button ${messageGroup? 'dashboard__nav__button__select' : ''}`}>
+                        <button onClick={(e) => handleNavigate(e, '/dashboard/groups', navigate)} className={`dashboard__nav__button ${messageGroup? 'dashboard__nav__button__select' : ''}`}>
                             <BiMessageRounded className="dashboard__nav__icons"/>
                         </button>
                     </li>
@@ -83,15 +133,17 @@ const DashboardNav = ({
                             <div>
                             </div>
                             <ul>
-                                <li>
-                                    <button>Group One</button>
-                                </li>
-                                <li>
-                                    <button>Group Two</button>
-                                </li>
-                                <li>
-                                    <button>Group Three</button>
-                                </li>
+                                {!userGroups? (
+                                    <li className="loading__center"><AiOutlineLoading className="loading"/></li>
+                                ) : (
+                                    userGroups.map((group, index) => {
+                                        return(
+                                            <li key={group.id} ref={group.id === selectedGroupId ? selectedGroup : null}>
+                                                <button onClick={(e) => handleGroupClick(e, group.id, setMessageGroup)}>{group.name}</button>
+                                            </li>
+                                        )
+                                    })
+                                )}
                             </ul>
                             <ul className="dashboard__group__options">
                                 <li>

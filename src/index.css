@@ -29,6 +29,7 @@
   --pri__highlight__hover: #1e2133;
   --sec__highlight: #0E1F36;
   --offset__color: #B79855;
+  --offset__highlight: #caaa63;
   --error: #A91B1B;
   --shadow: rgba(0, 0, 0, 0.5);
   --pri__text: white;
@@ -55,6 +56,7 @@ body{
 .error{
   color: var(--error);
   font-weight: 900;
+  font-family: mainText;
 }
 
 .error__border{
@@ -79,11 +81,42 @@ body{
   justify-content: center;
 }
 
+.grid__loading{
+  grid-column: 2 / 3;
+}
+
 @keyframes loading{
   0%{
     transform: rotate(0deg);
   }
   100%{
     transform: rotate(360deg);
+  }
+}
+
+.login__error{
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to left, var(--auth__gradient) 0%, var(--pri__color) 100%);
+}
+
+.login__error > div > h1{
+  color: var(--pri__text);
+  margin-bottom: 1rem;
+  font-family: mainText;
+}
+
+.login__error > div > button{
+  padding: 1rem 2rem 1rem 2rem;
+  font-family: mainText;
+  background-color: var(--offset__color);
+  color: var(--pri__text);
+  font-size: 1rem;
+  border-radius: .5rem;
+  
+  &:hover{
+    background-color: var(--offset__highlight);
   }
 }

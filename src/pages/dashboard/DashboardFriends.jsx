@@ -1,14 +1,18 @@
-import { useContext, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import '../../assets/styles/Dashboard.css'
 import DashboardNav from '../../components/dashboard/DashboardNav'
 import Friends from '../../components/dashboard/Friends'
 import { AuthContext } from '../../context/AuthContext'
 import { AiOutlineLoading } from "react-icons/ai";
+import LoginError from '../../errors/loginError'
 
 const DashboardFriends = () => {
-    const { isAuthenticated, userLogin, userLogout } = useContext(AuthContext)
+    const { isAuthenticated, getRefresh, isAuthLoading} = useContext(AuthContext)
     const dashboardMain = useRef(null)
 
+    useEffect(() => {
+        getRefresh();
+    }, [])
     return(
         <>
             {isAuthenticated? (
@@ -17,9 +21,15 @@ const DashboardFriends = () => {
                     <Friends />
                 </main>
             ) : (
-                <main className='loading__screen'>
-                    <AiOutlineLoading className='loading'/>
-                </main>
+                <>
+                    {!isAuthLoading? (
+                        <main className='loading__screen'>
+                            <AiOutlineLoading className='loading'/>
+                        </main>
+                    ) : (
+                        <LoginError />
+                    )}
+                </>
             )}
         </>
     )

@@ -21,7 +21,7 @@ const routes = [
                 element: <Signup />
             },
             {
-                path: "/dashboard/message-groups",
+                path: "/dashboard/groups",
                 element: <DashboardMessageGroup />
             },
             {

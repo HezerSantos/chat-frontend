@@ -274,3 +274,9 @@
 .dashboard__user__message > p{
     text-align: right;
 }
+
+.loading__center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
