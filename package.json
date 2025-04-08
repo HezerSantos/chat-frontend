@@ -11,6 +11,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
+    "fix": "find .git/objects/ -type f -empty | xargs rm; git fetch -p; git fsck --full",
     "setup": "npm install @eslint/js @mdi/font @mdi/js @mdi/react @testing-library/jest-dom @testing-library/react @testing-library/user-event @types/react-dom @types/react @vitejs/plugin-react axios dompurify eslint-plugin-react-hooks eslint-plugin-react-refresh eslint-plugin-react eslint globals he jsdom react-dom react-icons react-router-dom react vite vitest javascript-obfuscator"
   },
   "dependencies": {
