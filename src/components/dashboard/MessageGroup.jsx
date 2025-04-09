@@ -63,13 +63,9 @@ const sendMessage = async(e, ws, userId, message, setMessage, username, groupId)
 }
 
 const MessageGroup = ({groupId}) => {
-    const { userId, username, ws, setWs } = useContext(AuthContext)
+    const { userId, username, ws, setWs, getRefresh } = useContext(AuthContext)
     const [ message, setMessage ] = useState("")
     const [ groupMessages, setGroupMessages ] = useState([])
-
-    useEffect(() => {
-        getGroupMessages(groupId, setGroupMessages, userId)
-    }, [groupId])
 
     useEffect(() => {
         let socket;
@@ -124,6 +120,10 @@ const MessageGroup = ({groupId}) => {
             }
         }
     }, [])
+
+    useEffect(() => {
+        getGroupMessages(groupId, setGroupMessages, userId)
+    }, [groupId])
 
     return(
         <section className='dashboard__messages'>

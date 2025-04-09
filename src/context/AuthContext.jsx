@@ -20,6 +20,7 @@ const AuthProvider = ({ children }) => {
         setUserId(res.data.id)
         setUsername(res.data.username)
         userLogin(); 
+        return
       } catch (error) {
         userLogout(); 
         setIsAuthLoading(true)

@@ -1,10 +1,10 @@
 import defaultProfile from '../../assets/images/defaultProfile.webp'
-const SearchElement = () => {
+const SearchElement = ({username, userId, profilePicture=null}) => {
     return(
         <>
             <div className="search__element">
-                <img src={defaultProfile} alt="" />
-                <p>@myusername</p>
+                <img src={profilePicture? profilePicture : defaultProfile} alt="" />
+                <p>@{username}</p>
                 <button>Add +</button>
             </div>
         </>

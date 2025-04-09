@@ -1,13 +1,29 @@
+import axios from 'axios'
 import defaultProfile from '../../assets/images/defaultProfile.webp'
+import api from '../../../config'
+import { useState } from 'react'
+const handleSubmit = async(e, userId, setButtonText, setIsDisabled) => {
+    e.preventDefault()
+    try{
+        const res = await axios.post(`${api}/api/users/${userId}/friends/request`)
 
-const UserElement = () => {
+        console.log(res)
+        setButtonText("Sent")
+        setIsDisabled(true)
+    } catch(e){
+        console.error(e)
+    }
+}
+const UserElement = ({username, profilePicture=null, userId}) => {
+    const [ buttonText, setButtonText ] = useState("Add")
+    const [isDisabled, setIsDisabled] = useState(false);
     return(
         <>
-            <div className='user__element'>
-                <img src={defaultProfile} alt="" />
-                <button>Add</button>
-                <p>@myusername</p>
-            </div>
+            <form className='user__element' onSubmit={(e) => handleSubmit(e, userId, setButtonText, setIsDisabled)}>
+                <img src={profilePicture? profilePicture : defaultProfile} alt="" />
+                <button disabled={isDisabled} >{buttonText}</button>
+                <p>@{username}</p>
+            </form>
         </>
     )
 }

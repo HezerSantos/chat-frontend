@@ -1,39 +1,194 @@
 import '../../assets/styles/Friends.css'
-
+import defaultProfile from '../../assets/images/defaultProfile.webp'
 import SearchBar from '../Friends/SearchBar'
 import SearchElement from '../Friends/SearchElement'
 import UserElement from '../Friends/UserElement'
+import { useEffect, useRef, useState } from 'react'
+import _ from 'lodash'
+import api from '../../../config'
+import axios from 'axios'
+import { AiOutlineLoading } from 'react-icons/ai'
+// const users = [
+//     {
+//         username: "Bob",
+//         userId: 3,
+//         profilePicture: defaultProfile
+//     },
+//     {
+//         username: "Jane",
+//         userId: 2,
+//         profilePicture: defaultProfile
+//     },
+//     {
+//         username: "Frank",
+//         userId: 5,
+//         profilePicture: defaultProfile
+//     },
+//     {
+//         username: "Camilla",
+//         userId: 1,
+//         profilePicture: defaultProfile
+//     },
+//     {
+//         username: "Selena",
+//         userId: 32,
+//         profilePicture: defaultProfile
+//     },
+//     {
+//         username: "Demarcus",
+//         userId: 33,
+//         profilePicture: defaultProfile
+//     },
+//     {
+//         username: "Lamar",
+//         userId: 23,
+//         profilePicture: defaultProfile
+//     },
+//     {
+//         username: "Jackson",
+//         userId: 53,
+//         profilePicture: defaultProfile
+//     },
+//     {
+//         username: "Rebecca",
+//         userId: 31,
+//         profilePicture: defaultProfile
+//     },
+//     {
+//         username: "Clarence",
+//         userId: 73,
+//         profilePicture: defaultProfile
+//     },
+//     {
+//         username: "Selener",
+//         userId: 83,
+//         profilePicture: defaultProfile
+//     },
+//     {
+//         username: "Beaner",
+//         userId: 311,
+//         profilePicture: defaultProfile
+//     },
+//     {
+//         username: "Justin",
+//         userId: 233,
+//         profilePicture: defaultProfile
+//     }
+// ]
+
+const getUsers = async(setUsers, setIsLoading) => {
+    try{
+        const res = await axios.get(`${api}/api/users`)
+
+        setUsers(res.data.users)
+        setIsLoading(false)
+    } catch(e){
+        console.error(e)
+    }
+}
+
 const Friends = () => {
+    const [ users, setUsers ] = useState([])
+    const [ searchedUsers, setSearchedUsers ] = useState([])
+    const [ suggestedUsers, setSuggestedUsers ] = useState([])
+    const [ search, setSearch ] = useState("")
+    const [ maxUsers, setMaxUsers ] = useState(1)
+    const [ isLoading, setIsLoading ] = useState(true)
+    const ref = useRef(null)
+    useEffect(() => {
+        const initiateMaxUsers = async() => {
+            await getUsers(setUsers, setIsLoading)
+            const windowSize = ref.current?.getBoundingClientRect().width
+            
+            let maxUsers = Math.floor(windowSize / 192)
+
+
+            if (maxUsers < 1){
+                maxUsers = 1
+            }
+            setMaxUsers(maxUsers)
+
+
+        }
+
+        initiateMaxUsers()
+        const modifyMaxUsers = () => {
+            const windowSize = ref.current?.getBoundingClientRect().width
+            
+            let maxUsers = Math.floor(windowSize / 192)
+
+            if (maxUsers < 1){
+                maxUsers = 1
+            }
+            setMaxUsers(maxUsers)
+            
+        }
+
+        window.addEventListener('resize', modifyMaxUsers)
+
+        return () => {
+            window.removeEventListener('resize', modifyMaxUsers)
+            
+        }
+    }, [])
+
+    useEffect(() => {
+        const randomSuggested = _.sampleSize(users, 10)
+        setSuggestedUsers(randomSuggested.slice(0, maxUsers).map(user => user))
+
+    }, [maxUsers])
     return(
         <>
-        <main className="friends__page">
-            <section className='search__bar'>
-                <SearchBar />
-            </section>
-            <section className='search__suggested'>
-                <p>Suggested</p>
-                <div>
-                    <UserElement />
-                    <UserElement />
-                    <UserElement />
-                    <UserElement />
-                    <UserElement />
-                    <UserElement />
-                    <UserElement />
-                    <UserElement />
-                </div>
-            </section>
-            <section className='search__results'>
-                <h1>Results for Gerome Powel: </h1>
-                <div>
-                    <SearchElement />
-                    <SearchElement />
-                    <SearchElement />
-                    <SearchElement />
-                    <SearchElement />
-                </div>
-            </section>
-        </main>
+            {!isLoading? (
+                <main className="friends__page" ref={ref}>
+                <section className='search__bar'>
+                    <SearchBar 
+                        users={users} 
+                        setSearchedUsers={setSearchedUsers}
+                        search={search}
+                        setSearch={setSearch}
+                    />
+                </section>
+                <section className='search__suggested'>
+                    <p>Suggested</p>
+                    <div>
+                        {suggestedUsers.map(user => {
+                            return(
+                                <UserElement 
+                                key={`s$s${user.id}`}
+                                    username={user.username} 
+                                    profilePicture={user.profilePicture} 
+                                    userId={user.id}
+                                />
+                            )
+                        })}
+                    </div>
+                </section>
+                <section className='search__results'>
+                    <h1>Results for {search}{search? `:` : ''} </h1>
+                    <div>
+                        {search && (
+                            searchedUsers.map(user => {
+                                return(
+                                    <SearchElement 
+                                        key={`s$e${user.id}`}
+                                        username={user.username} 
+                                        userId={user.id}
+                                        profilePicture={user.profilePicture}
+                                    />
+                                )
+                            })
+                        )}
+                    </div>
+                </section>
+            </main>
+            ) : (
+                <>
+                    <main className='loading__screen grid__loading'>
+                        <AiOutlineLoading className='loading' />
+                    </main>
+                </>
+            )}
         </>
     )
 }

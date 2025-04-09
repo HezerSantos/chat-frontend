@@ -64,7 +64,7 @@ const DashboardNav = ({
     setSubSettingsFlag,
     setMessageGroup = null,
 }) => {
-    const { ws } = useContext(AuthContext)
+    const { ws, getRefresh, isAuthenticated } = useContext(AuthContext)
     const toggleButton = useRef(null)
     const dashboardNav = useRef(null)
 
@@ -87,9 +87,14 @@ const DashboardNav = ({
 
 
     useEffect(() => {
-        if(messageGroup){
-            getUserGroups(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty)
+        const delay = async() => {
+            await getRefresh()
+            if(messageGroup){
+                getUserGroups(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty)
+            }
         }
+
+        delay()
     }, [])
 
 
