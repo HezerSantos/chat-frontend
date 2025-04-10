@@ -3,11 +3,12 @@ import defaultProfile from '../../assets/images/defaultProfile.webp'
 import SearchBar from '../Friends/SearchBar'
 import SearchElement from '../Friends/SearchElement'
 import UserElement from '../Friends/UserElement'
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import _ from 'lodash'
 import api from '../../../config'
 import axios from 'axios'
 import { AiOutlineLoading } from 'react-icons/ai'
+import { AuthContext } from '../../context/AuthContext'
 // const users = [
 //     {
 //         username: "Bob",
@@ -88,6 +89,7 @@ const getUsers = async(setUsers, setIsLoading) => {
 }
 
 const Friends = () => {
+    const { getRefresh } = useContext(AuthContext)
     const [ users, setUsers ] = useState([])
     const [ searchedUsers, setSearchedUsers ] = useState([])
     const [ suggestedUsers, setSuggestedUsers ] = useState([])
@@ -97,6 +99,7 @@ const Friends = () => {
     const ref = useRef(null)
     useEffect(() => {
         const initiateMaxUsers = async() => {
+            await getRefresh()
             await getUsers(setUsers, setIsLoading)
             const windowSize = ref.current?.getBoundingClientRect().width
             
@@ -140,7 +143,7 @@ const Friends = () => {
     return(
         <>
             {!isLoading? (
-                <main className="friends__page" ref={ref}>
+                <section className="friends__page" ref={ref}>
                 <section className='search__bar'>
                     <SearchBar 
                         users={users} 
@@ -181,12 +184,12 @@ const Friends = () => {
                         )}
                     </div>
                 </section>
-            </main>
+            </section>
             ) : (
                 <>
-                    <main className='loading__screen grid__loading'>
+                    <section className='loading__screen grid__loading'>
                         <AiOutlineLoading className='loading' />
-                    </main>
+                    </section>
                 </>
             )}
         </>

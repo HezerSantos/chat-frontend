@@ -8,7 +8,7 @@ import LoginError from '../../errors/loginError'
 const DashboardNotifications = () => {
     const { isAuthenticated, getRefresh, isAuthLoading } = useContext(AuthContext)
     const dashboardMain = useRef(null)
-
+    const [ notificationPageFlag, setNotificationPageFlag ] = useState(true)
     useEffect(() => {
         getRefresh();
     }, [])
@@ -16,8 +16,13 @@ const DashboardNotifications = () => {
         <>
             {isAuthenticated? (
                     <main className='dashboard__main' ref={dashboardMain}>
-                    <DashboardNav dashboardMain={dashboardMain} notifications={true}/>
-                    <Notifications />
+                    <DashboardNav 
+                        dashboardMain={dashboardMain}
+                        notifications={true} 
+                        notificationPageFlag={notificationPageFlag}
+                        setNotificationPageFlag={setNotificationPageFlag}
+                    />
+                    <Notifications notificationPageFlag={notificationPageFlag}/>
                 </main>
             ) : (
                 <>

@@ -26,8 +26,12 @@ const handleNavigate = (e, route, navigate, ws) => {
     navigate(route)
 }
 
-const handleSettings = (setSubSettingsFlag) => {
-    setSubSettingsFlag(prev => !prev)
+const handleChangeCredentials = (setSubSettingsFlag) => {
+    setSubSettingsFlag(false)
+}
+
+const handleLogout = (setSubSettingsFlag) => {
+    setSubSettingsFlag(true)
 }
 
 const getUserGroups = async(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty) => {
@@ -53,6 +57,14 @@ const getMessageGroup = async(e, groupId, setMessageGroup) => {
     }
 }
 
+const handlePending = (setNotificationPageFlag) => {
+    setNotificationPageFlag(true)
+}
+
+const handleRequest = (setNotificationPageFlag) => {
+    setNotificationPageFlag(false)
+}
+
 const DashboardNav = ({
     dashboardMain, 
     messageGroup = false, 
@@ -63,6 +75,8 @@ const DashboardNav = ({
     subSettingsFlag,
     setSubSettingsFlag,
     setMessageGroup = null,
+    notificationPageFlag = false,
+    setNotificationPageFlag
 }) => {
     const { ws, getRefresh, isAuthenticated } = useContext(AuthContext)
     const toggleButton = useRef(null)
@@ -92,8 +106,11 @@ const DashboardNav = ({
             if(messageGroup){
                 getUserGroups(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty)
             }
-        }
 
+            if(notifications){
+
+            }
+        }
         delay()
     }, [])
 
@@ -193,16 +210,30 @@ const DashboardNav = ({
                             </ul>
                         </>
                     )}
+
+                    {notifications && (
+                        <>
+                            <div></div>
+                            <ul>
+                                <li className={notificationPageFlag? "dashboard__sub__selected" : ""}>
+                                    <button onClick={(e) => handlePending(setNotificationPageFlag)}>Pending</button>
+                                </li>
+                                <li className={!notificationPageFlag? "dashboard__sub__selected" : ""}>
+                                    <button onClick={(e) => handleRequest(setNotificationPageFlag)}>My Requests</button>
+                                </li>
+                            </ul>
+                        </>
+                    )}
                     {settings && (
                         <>
                             <div>
                             </div>
                             <ul>
                                 <li className={!subSettingsFlag? "dashboard__sub__selected" : ''}>
-                                    <button onClick={() => handleSettings(setSubSettingsFlag)}>Change Credentials</button>
+                                    <button onClick={() => handleChangeCredentials(setSubSettingsFlag)}>Change Credentials</button>
                                 </li>
                                 <li className={subSettingsFlag? "dashboard__sub__selected" : ''}>
-                                    <button onClick={() => handleSettings(setSubSettingsFlag)}>Logout</button>
+                                    <button onClick={() => handleLogout(setSubSettingsFlag)}>Logout</button>
                                 </li>
                             </ul>
                         </>

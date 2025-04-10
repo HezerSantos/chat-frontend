@@ -135,6 +135,8 @@
         background-color: var(--offset__color);
         border-radius: .5rem;
         color: var(--pri__text);
+        text-wrap: nowrap;
+        text-overflow: ellipsis;
     }
 
     & > p{
@@ -147,3 +149,16 @@
     }
 }
 
+@media (max-width: 320px){
+    .search__element{
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        gap: .5rem;
+
+        & > button{
+            margin: 0;
+            width: 100%;
+        }
+    }
+}

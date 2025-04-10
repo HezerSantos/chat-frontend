@@ -13,7 +13,7 @@
 
 
 .dashboard__nav{
-    position: absolute;
+    position: fixed;
     display: grid;
     grid-template-columns: 5rem 1fr;
     background:linear-gradient(to bottom, var(--sec__color) 0%, var(--sec__inter__color) 100%);
