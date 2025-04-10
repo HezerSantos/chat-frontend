@@ -1,6 +1,6 @@
 import NotificationElementP from '../Notifications/NotificationElementP'
 import { useEffect, useState } from 'react'
-
+import { AiOutlineLoading } from 'react-icons/ai'
 const handlePendingNext = (setCurrentPendingPage, setCurrentPending, totalPendingPages, setPendingNext, setPendingPrev, pending) => {
     setCurrentPendingPage(prev => {
         const newCurrentPendingPage = prev + 1
@@ -38,23 +38,22 @@ const handlePendingPrev = (setCurrentPendingPage, setCurrentPending, totalPendin
     })
 }
 
-const Pending = ({users}) => {
+const Pending = ({users, isLoading}) => {
     const [ totalPendingPages, setTotalPendingPages ] = useState()
     const [ currentPendingPage, setCurrentPendingPage ] = useState(0)
     const [ currentPending, setCurrentPending ] = useState([])
     const [ pendingNext, setPendingNext ] = useState(false)
     const [ pendingPrev, setPendingPrev ] = useState(false)
-
-    const [ pending, setPending ] = useState(users)
     
     useEffect(() => {
 
-        const pendingPages = Math.floor(pending.length / 8)
+        const pendingPages = Math.floor(users.length / 8)
 
         setTotalPendingPages(pendingPages)
 
-        setCurrentPending(pending.slice(0, 8))
-    }, [])
+        setCurrentPending(users.slice(0, 8))
+
+    }, [users])
 
     useEffect(() => {
         if(totalPendingPages > 0){
@@ -63,30 +62,38 @@ const Pending = ({users}) => {
     }, [totalPendingPages])
 
     return(
-        <section className="notifications__page">
-            <section className='pending'>
-                <h1>Pending</h1>
-                <div className='notification__container'>
-                    {currentPending.map(user => {
-                        return (
-                            <NotificationElementP 
-                                key={user.userId}
-                                username={user.username}
-                                profilePicture={user.profilePicture}
-                            />
-                        )
-                    })}
-                </div>
-                <div className='notifications__buttons'>
-                    {pendingPrev && (
-                        <button className='prev' onClick={(e => handlePendingPrev(setCurrentPendingPage, setCurrentPending, totalPendingPages, setPendingNext, setPendingPrev, pending))}>prev</button>
-                    )}
-                    {pendingNext && (
-                        <button className='next' onClick={(e) => handlePendingNext(setCurrentPendingPage, setCurrentPending, totalPendingPages, setPendingNext, setPendingPrev, pending)}>next</button>
-                    )}
-                </div>
+        <>
+            {!isLoading? (
+                <section className="notifications__page">
+                <section className='pending'>
+                    <h1>Pending</h1>
+                    <div className='notification__container'>
+                        {currentPending.map(user => {
+                            return (
+                                <NotificationElementP 
+                                    key={user.receiverId}
+                                    username={user.receiver.username}
+                                    profilePicture={user.profilePicture}
+                                />
+                            )
+                        })}
+                    </div>
+                    <div className='notifications__buttons'>
+                        {pendingPrev && (
+                            <button className='prev' onClick={(e => handlePendingPrev(setCurrentPendingPage, setCurrentPending, totalPendingPages, setPendingNext, setPendingPrev, pending))}>prev</button>
+                        )}
+                        {pendingNext && (
+                            <button className='next' onClick={(e) => handlePendingNext(setCurrentPendingPage, setCurrentPending, totalPendingPages, setPendingNext, setPendingPrev, pending)}>next</button>
+                        )}
+                    </div>
+                </section>
             </section>
-        </section>
+            ) : (
+                <section className='loading__screen grid__loading'>
+                    <AiOutlineLoading className='loading' />
+                </section>
+            )}
+        </>
     )
 }
 

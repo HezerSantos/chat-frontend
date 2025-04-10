@@ -38,20 +38,19 @@ const handleRequestPrev = (setCurrentRequestPage, setCurrentRequest, totalReques
     })
 }
 
-const Request = ({users}) => {
+const Request = ({users, isLoading}) => {
     const [ totalRequestPages, setTotalRequestPages ] = useState()
     const [ currentRequestPage, setCurrentRequestPage ] = useState(0)
     const [ currentRequest, setCurrentRequest ] = useState([])
     const [ requestNext, setRequestNext ] = useState(false)
     const [ requestPrev, setRequestPrev ] = useState(false)
 
-    const [ request, setRequest ] = useState(users)
     useEffect(() => {
-        const requestPages = Math.floor(request.length / 8)
+        const requestPages = Math.floor(users.length / 8)
 
         setTotalRequestPages(requestPages)
 
-        setCurrentRequest(request.slice(0, 8))
+        setCurrentRequest(users.slice(0, 8))
     }, [])
 
 
@@ -63,30 +62,36 @@ const Request = ({users}) => {
     }, [totalRequestPages])
     return(
         <>
-            <section className="notifications__page">
-                <section className='requests'>
-                    <h1>My Requests</h1>
-                    <div className='notification__container'>
-                        {currentRequest.map(user => {
-                            return (
-                                <NotificationElementR 
-                                    key={user.userId}
-                                    username={user.username}
-                                    profilePicture={user.profilePicture}
-                                />
-                            )
-                        })}
-                    </div>
-                    <div className='notifications__buttons'>
-                        {requestPrev && (
-                            <button className='prev' onClick={(e => handleRequestPrev(setCurrentRequestPage, setCurrentRequest, totalRequestPages, setRequestNext, setRequestPrev, request))}>prev</button>
-                        )}
-                        {requestNext && (
-                            <button className='next' onClick={(e) => handleRequestNext(setCurrentRequestPage, setCurrentRequest, totalRequestPages, setRequestNext, setRequestPrev, request)}>next</button>
-                        )}
-                    </div>
+            {!isLoading? (
+                <section className="notifications__page">
+                    <section className='requests'>
+                        <h1>My Requests</h1>
+                        <div className='notification__container'>
+                            {currentRequest.map(user => {
+                                return (
+                                    <NotificationElementR 
+                                        key={user.senderId}
+                                        username={user.sender.username}
+                                        profilePicture={user.profilePicture}
+                                    />
+                                )
+                            })}
+                        </div>
+                        <div className='notifications__buttons'>
+                            {requestPrev && (
+                                <button className='prev' onClick={(e => handleRequestPrev(setCurrentRequestPage, setCurrentRequest, totalRequestPages, setRequestNext, setRequestPrev, request))}>prev</button>
+                            )}
+                            {requestNext && (
+                                <button className='next' onClick={(e) => handleRequestNext(setCurrentRequestPage, setCurrentRequest, totalRequestPages, setRequestNext, setRequestPrev, request)}>next</button>
+                            )}
+                        </div>
+                    </section>
                 </section>
-            </section>
+            ) : (
+                <section className='loading__screen grid__loading'>
+                    <AiOutlineLoading className='loading' />
+                </section>
+            )}
         </>
     )
 }
