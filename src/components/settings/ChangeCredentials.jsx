@@ -2,6 +2,9 @@ import { useRef, useState } from 'react'
 import '../../assets/styles/Settings.css'
 import axios from 'axios'
 import api from '../../../config'
+import { AiOutlineLoading } from 'react-icons/ai'
+
+import DOMPurify from 'dompurify';
 const openModal = (e, modal) => {
     e.preventDefault()
     modal.current?.showModal()
@@ -12,19 +15,36 @@ const closeModal = (e, modal) => {
     modal.current.close()
 }
 
-const handleSubmit = async(e, newUsername, newPassword, newConfrimPassword, verify) => {
+const handleSubmit = async(e, newUsername, newPassword, newConfrimPassword, verify, setErrors, setNewUsername, setNewPassword, setNewConfirmPassword, setVerify, modal, setIsLoading) => {
     e.preventDefault()
     try{
+        setIsLoading(true)
+        const username = DOMPurify.sanitize(newUsername)
+        const password = DOMPurify.sanitize(newPassword)
+        const confirmPassword = DOMPurify.sanitize(newConfrimPassword)
+        const sVerify = DOMPurify.sanitize(verify)
+
         const res = await axios.put(`${api}/api/users`, {
-            username: newUsername,
-            password: newPassword,
-            confrimPassword: newConfrimPassword,
-            verify: verify
+            username: username,
+            password: password,
+            confirmPassword: confirmPassword,
+            verify: sVerify
         })
 
-        console.log(res)
+        setNewUsername("")
+        setNewPassword("")
+        setNewConfirmPassword("")
+        setVerify("")
+        setErrors([])
+        modal.current.close()
+        setIsLoading(false)
     } catch(e){
+        let errors = e.response.data.errors
+        
+        errors = errors.map(error => error.msg)
+        setErrors(errors)
         console.error(e)
+        setIsLoading(false)
     }
 }
 
@@ -38,6 +58,8 @@ const ChangeCredentials = () => {
     const [ newPassword, setNewPassword ] = useState("")
     const [ newConfrimPassword, setNewConfirmPassword ] = useState("")
     const [ verify, setVerify ] = useState("")
+    const [ errors, setErrors ] = useState([])
+    const [ isLoading, setIsLoading ] = useState(false)
 
     return(
         <>
@@ -49,6 +71,7 @@ const ChangeCredentials = () => {
                     id='username' 
                     name='username'
                     onChange={(e => handleInput(e, setNewUsername))}
+                    value={newUsername}
                 />
             </div>
             <div>
@@ -58,6 +81,7 @@ const ChangeCredentials = () => {
                     id='password' 
                     name='password'
                     onChange={(e => handleInput(e, setNewPassword))}
+                    value={newPassword}
                 />
             </div>
             <div>
@@ -67,6 +91,7 @@ const ChangeCredentials = () => {
                     id='confirmPassword' 
                     name='confirmPassword'
                     onChange={(e => handleInput(e, setNewConfirmPassword))}
+                    value={newConfrimPassword}
                 />
             </div>
             <button type='submit' onClick={(e) => openModal(e, modal)}>
@@ -75,19 +100,29 @@ const ChangeCredentials = () => {
         </section>
 
         <dialog
-            className='credentials__modal'
+            className={`credentials__modal`}
             ref={modal}
         >
             <form action=""
-                
+                className={`${isLoading?  'credentials__center' : ''}`}
             >
-                <label htmlFor='confirm'>Type your password to change credentials</label>
-                <input type="text" name="confirm" id="confirm" onChange={(e) => handleInput(e, setVerify)}/>
-                <p className='error'>asdasd</p>
-                <div>
-                    <button onClick={(e) => closeModal(e, modal)}>Back</button>
-                    <button onClick={(e) => handleSubmit(e, newUsername, newPassword, newConfrimPassword, verify)} >Confirm</button>
-                </div>
+                {!isLoading? (
+                    <>
+                        <label htmlFor='confirm'>Type your password to change credentials</label>
+                        <input value={verify} type="text" name="confirm" id="confirm" onChange={(e) => handleInput(e, setVerify)}/>
+                        {errors.length > 0 && (
+                            errors.map((error, index) => {
+                                return <p key={index} className='error'>{error}</p>
+                            })
+                        )}
+                        <div>
+                            <button onClick={(e) => closeModal(e, modal)}>Back</button>
+                            <button disabled={verify? false: true} onClick={(e) => handleSubmit(e, newUsername, newPassword, newConfrimPassword, verify, setErrors, setNewUsername, setNewPassword, setNewConfirmPassword, setVerify, modal, setIsLoading)} >Confirm</button>
+                        </div>
+                    </>
+                ) : (
+                    <AiOutlineLoading className='loading'/>
+                )}
             </form>
         </dialog>
         </>

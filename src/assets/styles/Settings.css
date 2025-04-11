@@ -76,6 +76,11 @@
     gap: 1rem;
 }
 
+.credentials__center{
+    align-items: center;
+    justify-content: center;
+}
+
 .credentials__modal > form > label{
     color: var(--pri__text);
     font-family: mainText;
