@@ -92,7 +92,10 @@ const Login = () => {
                             </div>
                             <div>
                                 <button>Login</button>
-                                <Link to="/signup">Not a Member?</Link>
+                                <div className='auth__links'>
+                                    <Link to="/signup">Not a Member?</Link>
+                                    <Link to="/dashboard/groups">Already Logged In?</Link>
+                                </div>
                             </div>
                         </>
                     ) : (

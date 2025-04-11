@@ -16,7 +16,6 @@ const handleSubmit = async(e, groupId, message) => {
         const res = await axios.post(`${api}/api/groups/${groupId}/messages`, {
             message: sanitizedMessage
         })
-        console.log(res)
     } catch(e){
         console.error(e)
     }

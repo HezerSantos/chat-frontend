@@ -116,6 +116,13 @@
     color: var(--sec__text);
 }
 
+.auth__links{
+    display: flex;
+    justify-content: space-between;
+    & > a{
+        color: var(--sec__text);
+    }
+}
 @media (max-width: 825px){
     .index__auth{
         display: flex;
