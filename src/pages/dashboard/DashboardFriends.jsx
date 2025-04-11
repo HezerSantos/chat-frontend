@@ -1,13 +1,16 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import '../../assets/styles/Dashboard.css'
 import DashboardNav from '../../components/dashboard/DashboardNav'
-import Friends from '../../components/dashboard/Friends'
+import FindFriends from '../../components/dashboard/FindFriends'
 import { AuthContext } from '../../context/AuthContext'
 import { AiOutlineLoading } from "react-icons/ai";
 import LoginError from '../../errors/loginError'
+import MyFriends from '../../components/Friends/MyFriends'
 
 const DashboardFriends = () => {
     const { isAuthenticated, getRefresh, isAuthLoading} = useContext(AuthContext)
+
+    const [ friendPageFlag, setFriendPageFlag ] = useState(true)
     const dashboardMain = useRef(null)
 
     useEffect(() => {
@@ -17,8 +20,12 @@ const DashboardFriends = () => {
         <>
             {isAuthenticated? (
                 <main className='dashboard__main' ref={dashboardMain}>
-                    <DashboardNav dashboardMain={dashboardMain} friends={true}/>
-                    <Friends />
+                    <DashboardNav dashboardMain={dashboardMain} friends={true} setFriendPageFlag={setFriendPageFlag} friendPageFlag={friendPageFlag}/>
+                    {friendPageFlag? (
+                        <FindFriends />
+                    ) : (
+                        <MyFriends />
+                    )}
                 </main>
             ) : (
                 <>

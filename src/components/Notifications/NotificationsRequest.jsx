@@ -65,7 +65,7 @@ const Request = ({users, isLoading}) => {
             {!isLoading? (
                 <section className="notifications__page">
                     <section className='requests'>
-                        <h1>My Requests</h1>
+                        <h1>Received Requests</h1>
                         <div className='notification__container'>
                             {currentRequest.map(user => {
                                 return (
@@ -73,6 +73,7 @@ const Request = ({users, isLoading}) => {
                                         key={user.senderId}
                                         username={user.sender.username}
                                         profilePicture={user.profilePicture}
+                                        userId={user.senderId}
                                     />
                                 )
                             })}

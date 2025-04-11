@@ -81,7 +81,7 @@ const getRequests = async(setRequest, setPending, setIsLoading) => {
         const res = await axios.get(`${api}/api/users/friends/request`)
         const request = res.data.requests.receivedRequests
         const pending = res.data.requests.sentRequests
-        console.log(request)
+        // console.log(res)
         setRequest(request)
         setPending(pending)
         setIsLoading(false)
@@ -99,6 +99,7 @@ const Notifications = ({notificationPageFlag}) => {
     useEffect(() => {
         getRequests(setRequest, setPending, setIsLoading)
     },[])
+
     return(
         <>
             {notificationPageFlag? (

@@ -74,6 +74,12 @@ body{
   animation: loading .5s ease-in-out infinite;
 }
 
+.button__loading{
+  fill: white;
+
+  animation: loading .5s ease-in-out infinite;
+}
+
 .loading__screen{
   height: 100svh;
   display: flex;

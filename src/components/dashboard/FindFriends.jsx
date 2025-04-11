@@ -80,7 +80,6 @@ import { AuthContext } from '../../context/AuthContext'
 const getUsers = async(setUsers, setIsLoading) => {
     try{
         const res = await axios.get(`${api}/api/users`)
-
         setUsers(res.data.users)
         setIsLoading(false)
     } catch(e){
@@ -88,7 +87,7 @@ const getUsers = async(setUsers, setIsLoading) => {
     }
 }
 
-const Friends = () => {
+const FindFriends = () => {
     const { getRefresh } = useContext(AuthContext)
     const [ users, setUsers ] = useState([])
     const [ searchedUsers, setSearchedUsers ] = useState([])
@@ -196,4 +195,4 @@ const Friends = () => {
     )
 }
 
-export default Friends
+export default FindFriends

@@ -1,17 +1,13 @@
+import { useState } from "react"
 import defaultProfile from '../../assets/images/defaultProfile.webp'
+import axios from "axios"
 import api from '../../../config'
-import axios from 'axios'
-import { AiOutlineLoading } from 'react-icons/ai'
-import { useState } from 'react'
-
-const handleDelete = async(e, receiverId, setShown, setIsLoading) => {
+import { AiOutlineLoading } from "react-icons/ai"
+const deleteFriend = async(e, userId, setShown, setIsLoading) => {
     e.preventDefault()
-    try{
+    try{ 
         setIsLoading(true)
-        console.log(receiverId)
-        const res = await axios.delete(`${api}/api/users/${receiverId}/friends/request/pending`)
-
-        console.log(res)
+        const res = await axios.delete(`${api}/api/users/${userId}/friends`)
         setShown(false)
     } catch(e){
         setIsLoading(false)
@@ -19,20 +15,23 @@ const handleDelete = async(e, receiverId, setShown, setIsLoading) => {
     }
 }
 
-const NotificationElementP = ({userId, username, profilePicture = null}) => {
+const FriendElement = ({userId, username, profilePicture = null}) => {
     const [ shown, setShown ] = useState(true)
     const [ isLoading, setIsLoading ] = useState(false)
     return(
         <>
             {shown && (
-                <form className="notification__element" onSubmit={(e) => handleDelete(e, userId, setShown, setIsLoading)}>
+                <form className="notification__element">
                     <div className='info__container'>
                         <img src={profilePicture? profilePicture : defaultProfile} alt="" />
                         <p>@{username}</p>
                     </div>
                     <div>
-                        <button disabled={isLoading}>
-                            {!isLoading? (
+                        <button 
+                            disabled={isLoading}
+                            onClick={(e) => deleteFriend(e, userId, setShown, setIsLoading)}
+                        >
+                            {!isLoading? (  
                                 <>
                                     Delete
                                 </>
@@ -47,4 +46,4 @@ const NotificationElementP = ({userId, username, profilePicture = null}) => {
     )
 }
 
-export default NotificationElementP
+export default FriendElement

@@ -12,6 +12,7 @@ const handleSubmit = async(e, userId, setButtonText, setIsDisabled) => {
         setIsDisabled(true)
     } catch(e){
         console.error(e)
+        setButtonText("Add")
     }
 }
 const UserElement = ({username, profilePicture=null, userId}) => {

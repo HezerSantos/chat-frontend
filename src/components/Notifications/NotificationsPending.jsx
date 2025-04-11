@@ -66,7 +66,7 @@ const Pending = ({users, isLoading}) => {
             {!isLoading? (
                 <section className="notifications__page">
                 <section className='pending'>
-                    <h1>Pending</h1>
+                    <h1>Pending Requests</h1>
                     <div className='notification__container'>
                         {currentPending.map(user => {
                             return (
@@ -74,6 +74,7 @@ const Pending = ({users, isLoading}) => {
                                     key={user.receiverId}
                                     username={user.receiver.username}
                                     profilePicture={user.profilePicture}
+                                    userId={user.receiverId}
                                 />
                             )
                         })}

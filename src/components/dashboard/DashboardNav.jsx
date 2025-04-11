@@ -65,6 +65,14 @@ const handleRequest = (setNotificationPageFlag) => {
     setNotificationPageFlag(false)
 }
 
+const handleFindFriends = (setFriendPageFlag) => {
+    setFriendPageFlag(true)
+}
+
+const handleMyFriends = (setFriendPageFlag) => {
+    setFriendPageFlag(false)
+}
+
 const DashboardNav = ({
     dashboardMain, 
     messageGroup = false, 
@@ -76,7 +84,9 @@ const DashboardNav = ({
     setSubSettingsFlag,
     setMessageGroup = null,
     notificationPageFlag = false,
-    setNotificationPageFlag
+    setNotificationPageFlag,
+    setFriendPageFlag,
+    friendPageFlag
 }) => {
     const { ws, getRefresh, isAuthenticated } = useContext(AuthContext)
     const toggleButton = useRef(null)
@@ -105,10 +115,6 @@ const DashboardNav = ({
             await getRefresh()
             if(messageGroup){
                 getUserGroups(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty)
-            }
-
-            if(notifications){
-
             }
         }
         delay()
@@ -211,6 +217,20 @@ const DashboardNav = ({
                         </>
                     )}
 
+                    {friends && (
+                        <>
+                            <div></div>
+                            <ul>
+                                <li className={friendPageFlag? "dashboard__sub__selected" : ""}>
+                                    <button onClick={() => handleFindFriends(setFriendPageFlag)}>Find Friends</button>
+                                </li>
+                                <li className={!friendPageFlag? "dashboard__sub__selected" : ""}>
+                                    <button onClick={() => handleMyFriends(setFriendPageFlag)}>My Friends</button>
+                                </li>
+                            </ul>
+                        </>
+                    )}
+
                     {notifications && (
                         <>
                             <div></div>
@@ -219,7 +239,7 @@ const DashboardNav = ({
                                     <button onClick={(e) => handlePending(setNotificationPageFlag)}>Pending</button>
                                 </li>
                                 <li className={!notificationPageFlag? "dashboard__sub__selected" : ""}>
-                                    <button onClick={(e) => handleRequest(setNotificationPageFlag)}>My Requests</button>
+                                    <button onClick={(e) => handleRequest(setNotificationPageFlag)}>Received</button>
                                 </li>
                             </ul>
                         </>
