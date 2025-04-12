@@ -13,9 +13,9 @@ const DashboardMessageGroup = () => {
     const [ messageGroup, setMessageGroup ] = useState(null)
     const dashboardMain = useRef(null)
 
-    useEffect(() => {
-        getRefresh();  
-    }, [])
+    // useEffect(() => {
+    //     getRefresh();  
+    // }, [])
 
 
     return(

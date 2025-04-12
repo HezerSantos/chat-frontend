@@ -2,11 +2,12 @@ import '../../assets/styles/Notifications.css'
 import defaultProfile from '../../assets/images/defaultProfile.webp'
 import NotificationElementP from '../Notifications/NotificationElementP'
 import NotificationElementR from '../Notifications/NotificationElementR'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Pending from '../Notifications/NotificationsPending'
 import Request from '../Notifications/NotificationsRequest'
 import axios from 'axios'
 import api from '../../../config'
+import { AuthContext } from '../../context/AuthContext'
 // const users = [
 //     {
 //         username: "Bob",
@@ -92,12 +93,17 @@ const getRequests = async(setRequest, setPending, setIsLoading) => {
 
 
 const Notifications = ({notificationPageFlag}) => {
-
+    const { getRefresh } = useContext(AuthContext)
     const [ request, setRequest ] = useState([])
     const [ pending, setPending ] = useState([])
     const [ isLoading, setIsLoading ] = useState(true)
     useEffect(() => {
-        getRequests(setRequest, setPending, setIsLoading)
+        const delay = async() => {
+            await getRefresh()
+            getRequests(setRequest, setPending, setIsLoading)
+        }
+
+        delay()
     },[])
 
     return(

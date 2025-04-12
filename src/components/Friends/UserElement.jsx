@@ -7,7 +7,6 @@ const handleSubmit = async(e, userId, setButtonText, setIsDisabled) => {
     try{
         const res = await axios.post(`${api}/api/users/${userId}/friends/request`)
 
-        console.log(res)
         setButtonText("Sent")
         setIsDisabled(true)
     } catch(e){

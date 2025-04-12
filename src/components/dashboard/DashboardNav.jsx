@@ -112,8 +112,8 @@ const DashboardNav = ({
 
     useEffect(() => {
         const delay = async() => {
-            await getRefresh()
             if(messageGroup){
+                await getRefresh()
                 getUserGroups(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty)
             }
         }
