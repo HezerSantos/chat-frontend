@@ -14,7 +14,7 @@ const login = async(e, setLoginError, setIsLoading, navigate, userLogin) => {
             username: e.target.username.value,
             password: e.target.password.value,
         })
-        console.log(res)
+        // console.log(res)
         setIsLoading(false)
         userLogin()
         navigate('/dashboard/groups')
