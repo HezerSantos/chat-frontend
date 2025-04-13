@@ -12,7 +12,7 @@ import axios from "axios";
 import api from '../../../config'
 import { AiOutlineLoading } from "react-icons/ai";
 import MessageGroup from "./MessageGroup";
-import { AuthContext } from "../../context/AuthContext";
+import {AuthContext} from "../../context/AuthContext";
 const toggleNavBar = (e, toggleButton, dashboardMain, dashboardNav) => {
     toggleButton.current.classList.toggle('dashboard__button__toggle')
     dashboardMain.current.classList.toggle('dashboard__main__toggle')
@@ -34,9 +34,17 @@ const handleLogout = (setSubSettingsFlag) => {
     setSubSettingsFlag(true)
 }
 
-const getUserGroups = async(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty) => {
+const getUserGroups = async(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty, _sadwv) => {
     try{
-        const res = await axios.get(`${api}/api/groups`)
+        const cookie = document.cookie.split("=")[1]
+
+        const payload = _sadwv(cookie)
+        console.log(payload)
+        const res = await axios.get(`${api}/api/groups`, {
+            headers: {
+                '_sadwv': payload
+            }
+        })
         if(res.data.userGroups.length !== 0){
             setMessageGroup(<MessageGroup key={res.data.userGroups[0].id} groupId={res.data.userGroups[0].id}/>)
             setSelectedGroupId(res.data.userGroups[0].id)
@@ -88,7 +96,7 @@ const DashboardNav = ({
     setFriendPageFlag,
     friendPageFlag
 }) => {
-    const { ws, getRefresh, isAuthenticated } = useContext(AuthContext)
+    const { ws, getRefresh, isAuthenticated, _sadwv } = useContext(AuthContext)
     const toggleButton = useRef(null)
     const dashboardNav = useRef(null)
 
@@ -114,7 +122,7 @@ const DashboardNav = ({
         const delay = async() => {
             if(messageGroup){
                 await getRefresh()
-                getUserGroups(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty)
+                getUserGroups(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty, _sadwv)
             }
         }
         delay()
