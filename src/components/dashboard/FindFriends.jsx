@@ -77,46 +77,25 @@ import { AuthContext } from '../../context/AuthContext'
 //     }
 // ]
 
-const getUsers = async(setUsers, setIsLoading) => {
-    try{
-        const res = await axios.get(`${api}/api/users`)
-        setUsers(res.data.users)
-        setIsLoading(false)
-    } catch(e){
-        console.error(e)
-    }
-}
+// const getUsers = async(setUsers, setIsLoading) => {
+//     try{
+//         const res = await axios.get(`${api}/api/users`)
+//         setUsers(res.data.users)
+//         setIsLoading(false)
+//     } catch(e){
+//         console.error(e)
+//     }
+// }
 
-const FindFriends = () => {
+const FindFriends = ({users, setUsers, findLoading, suggestedUsers, setMaxUsers}) => {
     const { getRefresh } = useContext(AuthContext)
-    const [ users, setUsers ] = useState([])
     const [ searchedUsers, setSearchedUsers ] = useState([])
-    const [ suggestedUsers, setSuggestedUsers ] = useState([])
     const [ search, setSearch ] = useState("")
-    const [ maxUsers, setMaxUsers ] = useState(1)
-    const [ isLoading, setIsLoading ] = useState(true)
     const ref = useRef(null)
+    
     useEffect(() => {
-        const initiateMaxUsers = async() => {
-            await getRefresh()
-            await getUsers(setUsers, setIsLoading)
-            const windowSize = ref.current?.getBoundingClientRect().width
-            
-            let maxUsers = Math.floor(windowSize / 192)
-
-
-            if (maxUsers < 1){
-                maxUsers = 1
-            }
-            setMaxUsers(maxUsers)
-
-
-        }
-
-        initiateMaxUsers()
         const modifyMaxUsers = () => {
             const windowSize = ref.current?.getBoundingClientRect().width
-            
             let maxUsers = Math.floor(windowSize / 192)
 
             if (maxUsers < 1){
@@ -134,14 +113,9 @@ const FindFriends = () => {
         }
     }, [])
 
-    useEffect(() => {
-        const randomSuggested = _.sampleSize(users, 10)
-        setSuggestedUsers(randomSuggested.slice(0, maxUsers).map(user => user))
-
-    }, [maxUsers])
     return(
         <>
-            {!isLoading? (
+            {!findLoading? (
                 <section className="friends__page" ref={ref}>
                 <section className='search__bar'>
                     <SearchBar 

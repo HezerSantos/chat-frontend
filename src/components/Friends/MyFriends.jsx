@@ -4,27 +4,10 @@ import axios from "axios"
 import api from '../../../config'
 import { AiOutlineLoading } from "react-icons/ai"
 
-const getFriends = async(setMyFriends, setIsLoading) => {
-    try{
-        const res = await axios.get(`${api}/api/users/friends`)
-        const friends = res.data.friends.friendsAsUser
-        setMyFriends(friends)
-        setIsLoading(false)
-    } catch(e){
-        console.error(e)
-    }
-}
-
-const MyFriends = () => {
-    const [ myFriends, setMyFriends ] = useState([])
-    const [ isLoading, setIsLoading ] = useState(true)
-    useEffect(() => {
-        getFriends(setMyFriends, setIsLoading)
-    }, [])
-
+const MyFriends = ({myFriends, myFriendsLoading}) => {
     return(
         <>
-            {!isLoading? (
+            {!myFriendsLoading? (
                 <section className="my__friends">
                     <h1>My Friends</h1>
                     {myFriends.map(friend => {
