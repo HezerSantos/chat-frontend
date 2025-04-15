@@ -8,7 +8,7 @@ const handleDelete = async(e, receiverId, setShown, setIsLoading) => {
     e.preventDefault()
     try{
         setIsLoading(true)
-        console.log(receiverId)
+        // console.log(receiverId)
         const res = await axios.delete(`${api}/api/users/${receiverId}/friends/request/pending`)
 
         console.log(res)

@@ -5,12 +5,40 @@ import Notifications from '../../components/dashboard/Notifications'
 import { AuthContext } from '../../context/AuthContext'
 import { AiOutlineLoading } from "react-icons/ai";
 import LoginError from '../../errors/loginError'
+import axios from 'axios'
+import api from '../../../config'
+
+
+const getRequests = async(setRequest, setPending, setIsLoading) => {
+    try{
+        const res = await axios.get(`${api}/api/users/friends/request`)
+        const request = res.data.requests.receivedRequests
+        const pending = res.data.requests.sentRequests
+        // console.log(res)
+        setRequest(request)
+        setPending(pending)
+        setIsLoading(false)
+    }catch(e){
+        console.error(e)
+    }
+}
+
+
+
 const DashboardNotifications = () => {
     const { isAuthenticated, getRefresh, isAuthLoading } = useContext(AuthContext)
     const dashboardMain = useRef(null)
     const [ notificationPageFlag, setNotificationPageFlag ] = useState(true)
+
+    const [ request, setRequest ] = useState([])
+    const [ pending, setPending ] = useState([])
+    const [ isLoading, setIsLoading ] = useState(true)
     useEffect(() => {
-        getRefresh();
+        const delay = async() => {
+            await  getRefresh();
+            getRequests(setRequest, setPending, setIsLoading)
+        }
+        delay()
     }, [])
     return(
         <>
@@ -22,7 +50,12 @@ const DashboardNotifications = () => {
                         notificationPageFlag={notificationPageFlag}
                         setNotificationPageFlag={setNotificationPageFlag}
                     />
-                    <Notifications notificationPageFlag={notificationPageFlag}/>
+                    <Notifications 
+                        notificationPageFlag={notificationPageFlag} 
+                        request={request} 
+                        pending={pending}
+                        isLoading={isLoading}
+                    />
                 </main>
             ) : (
                 <>

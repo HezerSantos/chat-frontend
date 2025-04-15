@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "commit": "sh -c 'git add -A && git commit -m \"$1\"'",
     "start": "npx http-server ./dist",
     "dev": "vite",
     "build": "vite build && npm run obfuscate",

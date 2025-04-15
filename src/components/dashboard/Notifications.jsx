@@ -77,34 +77,23 @@ import { AuthContext } from '../../context/AuthContext'
 // ]
 
 
-const getRequests = async(setRequest, setPending, setIsLoading) => {
-    try{
-        const res = await axios.get(`${api}/api/users/friends/request`)
-        const request = res.data.requests.receivedRequests
-        const pending = res.data.requests.sentRequests
-        // console.log(res)
-        setRequest(request)
-        setPending(pending)
-        setIsLoading(false)
-    }catch(e){
-        console.error(e)
-    }
-}
+// const getRequests = async(setRequest, setPending, setIsLoading) => {
+//     try{
+//         const res = await axios.get(`${api}/api/users/friends/request`)
+//         const request = res.data.requests.receivedRequests
+//         const pending = res.data.requests.sentRequests
+//         // console.log(res)
+//         setRequest(request)
+//         setPending(pending)
+//         setIsLoading(false)
+//     }catch(e){
+//         console.error(e)
+//     }
+// }
 
 
-const Notifications = ({notificationPageFlag}) => {
+const Notifications = ({notificationPageFlag, request, pending, isLoading}) => {
     const { getRefresh } = useContext(AuthContext)
-    const [ request, setRequest ] = useState([])
-    const [ pending, setPending ] = useState([])
-    const [ isLoading, setIsLoading ] = useState(true)
-    useEffect(() => {
-        const delay = async() => {
-            await getRefresh()
-            getRequests(setRequest, setPending, setIsLoading)
-        }
-
-        delay()
-    },[])
 
     return(
         <>

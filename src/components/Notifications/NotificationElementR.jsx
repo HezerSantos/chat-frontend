@@ -10,7 +10,7 @@ const handleDelete = async(e, senderId, setShown, setDeleteLoading) => {
         setDeleteLoading(true)
         const res = await axios.delete(`${api}/api/users/${senderId}/friends/request/received`)
 
-        console.log(res)
+        // console.log(res)
         setShown(false)
     } catch(e){
         console.error(e)
@@ -25,7 +25,7 @@ const handleAdd = async(e, senderId, setShown, setAddLoading) => {
         setAddLoading(true)
         const res = await axios.post(`${api}/api/users/${senderId}/friends`)
 
-        console.log(res)
+        // console.log(res)
         setShown(false)
     } catch(e){
         setAddLoading(false)
