@@ -19,9 +19,11 @@ const toggleNavBar = (e, toggleButton, dashboardMain, dashboardNav) => {
     dashboardNav.current.classList.toggle('toggle__dashboard')
 }
 
-const handleNavigate = (e, route, navigate, ws) => {
+const handleNavigate = (e, route, navigate, ws, setWs) => {
     if(ws){
+        console.log("closing")
         ws.close()
+        setWs(null)
     }
     navigate(route)
 }
@@ -32,29 +34,6 @@ const handleChangeCredentials = (setSubSettingsFlag) => {
 
 const handleLogout = (setSubSettingsFlag) => {
     setSubSettingsFlag(true)
-}
-
-const getUserGroups = async(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty, _sadwv) => {
-    try{
-        const cookie = document.cookie.split("=")[1]
-
-        const payload = _sadwv(cookie)
-        console.log(payload)
-        const res = await axios.get(`${api}/api/groups`, {
-            headers: {
-                '_sadwv': payload
-            }
-        })
-        if(res.data.userGroups.length !== 0){
-            setMessageGroup(<MessageGroup key={res.data.userGroups[0].id} groupId={res.data.userGroups[0].id}/>)
-            setSelectedGroupId(res.data.userGroups[0].id)
-        }
-        setUserGroups(res.data.userGroups)
-        setJoinedGroups(res.data.joinedGroups)
-        setIsEmpty(false)
-    } catch (e){
-        console.error(e)
-    }
 }
 
 const getMessageGroup = async(e, groupId, setMessageGroup) => {
@@ -83,30 +62,28 @@ const handleMyFriends = (setFriendPageFlag) => {
 
 const DashboardNav = ({
     dashboardMain, 
-    messageGroup = false, 
+    messagePage = false, 
     addGroup = false, 
     friends = false, 
     notifications = false, 
     settings = false,
     subSettingsFlag,
     setSubSettingsFlag,
-    setMessageGroup = null,
+    setMessageGroup,
     notificationPageFlag = false,
     setNotificationPageFlag,
     setFriendPageFlag,
-    friendPageFlag
+    friendPageFlag,
+    selectedGroupId,
+    setSelectedGroupId,
+    userGroups,
+    joinedGroups
 }) => {
-    const { ws, getRefresh, isAuthenticated, _sadwv } = useContext(AuthContext)
+    const { ws, setWs} = useContext(AuthContext)
     const toggleButton = useRef(null)
     const dashboardNav = useRef(null)
 
     const selectedGroup = useRef(null)
-    const [selectedGroupId, setSelectedGroupId] = useState(null);
-
-    const [ userGroups, setUserGroups ] = useState(null)
-    const [ joinedGroups, setJoinedGroups ] = useState(null)
-
-    const [ isEmpty, setIsEmpty ] = useState(true)
     const navigate = useNavigate()
 
     const groupList = useRef(null)
@@ -119,20 +96,8 @@ const DashboardNav = ({
 
 
     useEffect(() => {
-        const delay = async() => {
-            if(messageGroup){
-                await getRefresh()
-                getUserGroups(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty, _sadwv)
-            }
-        }
-        delay()
-    }, [])
-
-
-    useEffect(() => {
         selectedGroup.current?.classList.add("dashboard__sub__selected")
-
-    }, [selectedGroupId])
+    }, [selectedGroupId]) 
 
 
 
@@ -153,33 +118,33 @@ const DashboardNav = ({
                         </button>
                     </li>
                     <li>
-                        <button onClick={(e) => handleNavigate(e, '/dashboard/groups', navigate, ws)} className={`dashboard__nav__button ${messageGroup? 'dashboard__nav__button__select' : ''}`}>
+                        <button onClick={(e) => handleNavigate(e, '/dashboard/groups', navigate, ws, setWs)} className={`dashboard__nav__button ${messagePage? 'dashboard__nav__button__select' : ''}`}>
                             <BiMessageRounded className="dashboard__nav__icons"/>
                         </button>
                     </li>
                     <li>
-                        <button onClick={(e) => handleNavigate(e, '/dashboard/add-groups', navigate, ws)} className={`dashboard__nav__button ${addGroup? 'dashboard__nav__button__select' : ''}`}>
+                        <button onClick={(e) => handleNavigate(e, '/dashboard/add-groups', navigate, ws, setWs)} className={`dashboard__nav__button ${addGroup? 'dashboard__nav__button__select' : ''}`}>
                             <IoMdAddCircle className="dashboard__nav__icons"/>
                         </button>
                     </li>
                     <li>
-                        <button onClick={(e) => handleNavigate(e, '/dashboard/friends', navigate, ws)} className={`dashboard__nav__button ${friends? 'dashboard__nav__button__select' : ''}`}>
+                        <button onClick={(e) => handleNavigate(e, '/dashboard/friends', navigate, ws, setWs)} className={`dashboard__nav__button ${friends? 'dashboard__nav__button__select' : ''}`}>
                             <FaUserFriends className="dashboard__nav__icons" />
                         </button>
                     </li>
                     <li>
-                        <button onClick={(e) => handleNavigate(e, '/dashboard/notifications', navigate, ws)} className={`dashboard__nav__button  ${notifications? 'dashboard__nav__button__select' : ''}`}>
+                        <button onClick={(e) => handleNavigate(e, '/dashboard/notifications', navigate, ws, setWs)} className={`dashboard__nav__button  ${notifications? 'dashboard__nav__button__select' : ''}`}>
                             <IoIosNotifications className="dashboard__nav__icons"/>
                         </button>
                     </li>
                     <li>
-                        <button onClick={(e) => handleNavigate(e, '/dashboard/settings', navigate, ws)} className={`dashboard__nav__button ${settings? 'dashboard__nav__button__select' : ''}`}>
+                        <button onClick={(e) => handleNavigate(e, '/dashboard/settings', navigate, ws, setWs)} className={`dashboard__nav__button ${settings? 'dashboard__nav__button__select' : ''}`}>
                             <IoMdSettings className="dashboard__nav__icons"/>
                         </button>
                     </li>
                 </ul>
                 <div>
-                    {messageGroup &&(
+                    {messagePage &&(
                         <>
                             <div>
                             </div>
@@ -201,7 +166,7 @@ const DashboardNav = ({
                             </ul>
                             <div className="dashboard__joined__groups">
                                 <ol>
-                                    {!joinedGroups? (
+                                    {!joinedGroups? ( 
                                         <></>
                                     ) : (
                                         <>

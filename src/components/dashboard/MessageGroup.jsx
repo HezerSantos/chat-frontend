@@ -70,6 +70,7 @@ const MessageGroup = ({groupId}) => {
         let socket;
         if(ws){
             ws.close()
+            setWs(null)
         }
         socket = new WebSocket('ws://localhost:8080')
 
@@ -115,7 +116,7 @@ const MessageGroup = ({groupId}) => {
         
         return () => {
             if(ws){
-                socket.close()
+                ws.close()
             }
         }
     }, [])

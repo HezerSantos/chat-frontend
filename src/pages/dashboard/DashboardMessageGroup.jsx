@@ -7,22 +7,65 @@ import { AiOutlineLoading } from "react-icons/ai";
 import LoginError from '../../errors/loginError'
 import axios from "axios"
 import api from '../../../config'
+import MessageGroup from '../../components/dashboard/MessageGroup';
+
+const getUserGroups = async(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty, _sadwv) => {
+    try{
+        const cookie = document.cookie.split("=")[1]
+
+        const payload = _sadwv(cookie)
+        // console.log(payload)
+        const res = await axios.get(`${api}/api/groups`, {
+            headers: {
+                '_sadwv': payload
+            }
+        })
+        if(res.data.userGroups.length !== 0){
+            setMessageGroup(<MessageGroup key={res.data.userGroups[0].id} groupId={res.data.userGroups[0].id}/>)
+            setSelectedGroupId(res.data.userGroups[0].id)
+        }
+        setUserGroups(res.data.userGroups)
+        setJoinedGroups(res.data.joinedGroups)
+        setIsEmpty(false)
+    } catch (e){
+        console.error(e)
+    }
+}
+
 
 const DashboardMessageGroup = () => {
-    const { isAuthenticated, getRefresh, isAuthLoading } = useContext(AuthContext)
+    const { isAuthenticated, getRefresh, isAuthLoading, _sadwv, ws, setWs } = useContext(AuthContext)
     const [ messageGroup, setMessageGroup ] = useState(null)
+    const [selectedGroupId, setSelectedGroupId] = useState(null);
+    const [ isEmpty, setIsEmpty ] = useState(true)
+    const [ userGroups, setUserGroups ] = useState(null)
+    const [ joinedGroups, setJoinedGroups ] = useState(null)
+
     const dashboardMain = useRef(null)
 
     useEffect(() => {
-        getRefresh();  
+        const delay = async() => {
+            await getRefresh(); 
+            getUserGroups(setUserGroups, setMessageGroup, setSelectedGroupId, setJoinedGroups, setIsEmpty, _sadwv)
+        }
+        delay()
     }, [])
+
 
 
     return(
         <>
             {isAuthenticated? (
                 <main className='dashboard__main' ref={dashboardMain}>
-                    <DashboardNav dashboardMain={dashboardMain} messageGroup={true} setMessageGroup={setMessageGroup}/>
+                    <DashboardNav 
+                    dashboardMain={dashboardMain} 
+                    messagePage={true} 
+                    setMessageGroup={setMessageGroup}
+                    selectedGroupId={selectedGroupId}
+                    setSelectedGroupId={setSelectedGroupId}
+                    userGroups={userGroups} //
+                    joinedGroups={joinedGroups}
+                    />
                     {messageGroup? (
                         messageGroup
                     ) : (
