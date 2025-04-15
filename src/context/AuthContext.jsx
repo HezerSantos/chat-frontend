@@ -23,7 +23,7 @@ const AuthProvider = ({ children }) => {
       const payload = decodeJWT(cookie)
 
       const token = payload._fqekx
-      // console.log("OG:", token)
+      console.log("OG:", token)
       const newToken = token.slice(0,7) + 'cats' + token.slice(7, 33) + "other" + token.slice(32, 65)
       // console.log("New:", newToken)
       return newToken
