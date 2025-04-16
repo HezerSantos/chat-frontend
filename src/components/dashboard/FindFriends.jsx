@@ -87,86 +87,92 @@ import { AuthContext } from '../../context/AuthContext'
 //     }
 // }
 
-const FindFriends = ({users, setUsers, findLoading, suggestedUsers, setMaxUsers}) => {
-    const { getRefresh } = useContext(AuthContext)
-    const [ searchedUsers, setSearchedUsers ] = useState([])
-    const [ search, setSearch ] = useState("")
-    const ref = useRef(null)
-    
-    useEffect(() => {
-        const modifyMaxUsers = () => {
-            const windowSize = ref.current?.getBoundingClientRect().width
-            let maxUsers = Math.floor(windowSize / 192)
+const FindFriends = ({
+  users,
+  setUsers,
+  findLoading,
+  suggestedUsers,
+  setMaxUsers,
+}) => {
+  const { getRefresh } = useContext(AuthContext)
+  const [searchedUsers, setSearchedUsers] = useState([])
+  const [search, setSearch] = useState('')
+  const ref = useRef(null)
 
-            if (maxUsers < 1){
-                maxUsers = 1
-            }
-            setMaxUsers(maxUsers)
-            
-        }
+  useEffect(() => {
+    const modifyMaxUsers = () => {
+      const windowSize = ref.current?.getBoundingClientRect().width
+      let maxUsers = Math.floor(windowSize / 192)
 
-        window.addEventListener('resize', modifyMaxUsers)
+      if (maxUsers < 1) {
+        maxUsers = 1
+      }
+      setMaxUsers(maxUsers)
+    }
 
-        return () => {
-            window.removeEventListener('resize', modifyMaxUsers)
-            
-        }
-    }, [])
+    window.addEventListener('resize', modifyMaxUsers)
 
-    return(
-        <>
-            {!findLoading? (
-                <section className="friends__page" ref={ref}>
-                <section className='search__bar'>
-                    <SearchBar 
-                        users={users} 
-                        setSearchedUsers={setSearchedUsers}
-                        search={search}
-                        setSearch={setSearch}
+    return () => {
+      window.removeEventListener('resize', modifyMaxUsers)
+    }
+  }, [])
+
+  return (
+    <>
+      {!findLoading ? (
+        <section className="friends__page" ref={ref}>
+          <section className="search__bar">
+            <SearchBar
+              users={users}
+              setSearchedUsers={setSearchedUsers}
+              search={search}
+              setSearch={setSearch}
+            />
+          </section>
+          <section className="search__suggested">
+            <p>Suggested</p>
+            <div>
+              {suggestedUsers.map((user) => {
+                return (
+                  <UserElement
+                    key={`s$s${user.id}`}
+                    username={user.username}
+                    profilePicture={user.profilePicture}
+                    userId={user.id}
+                  />
+                )
+              })}
+            </div>
+          </section>
+          <section className="search__results">
+            <h1>
+              Results for {search}
+              {search ? `:` : ''}{' '}
+            </h1>
+            <div>
+              {search &&
+                searchedUsers.map((user) => {
+                  return (
+                    <SearchElement
+                      key={`s$e${user.id}`}
+                      username={user.username}
+                      userId={user.id}
+                      profilePicture={user.profilePicture}
                     />
-                </section>
-                <section className='search__suggested'>
-                    <p>Suggested</p>
-                    <div>
-                        {suggestedUsers.map(user => {
-                            return(
-                                <UserElement 
-                                key={`s$s${user.id}`}
-                                    username={user.username} 
-                                    profilePicture={user.profilePicture} 
-                                    userId={user.id}
-                                />
-                            )
-                        })}
-                    </div>
-                </section>
-                <section className='search__results'>
-                    <h1>Results for {search}{search? `:` : ''} </h1>
-                    <div>
-                        {search && (
-                            searchedUsers.map(user => {
-                                return(
-                                    <SearchElement 
-                                        key={`s$e${user.id}`}
-                                        username={user.username} 
-                                        userId={user.id}
-                                        profilePicture={user.profilePicture}
-                                    />
-                                )
-                            })
-                        )}
-                    </div>
-                </section>
-            </section>
-            ) : (
-                <>
-                    <section className='loading__screen grid__loading'>
-                        <AiOutlineLoading className='loading' />
-                    </section>
-                </>
-            )}
+                  )
+                })}
+            </div>
+          </section>
+        </section>
+      ) : (
+        <>
+          <section className="loading__screen grid__loading">
+            <AiOutlineLoading className="loading" />
+          </section>
         </>
-    )
+      )}
+    </>
+  )
 }
 
 export default FindFriends

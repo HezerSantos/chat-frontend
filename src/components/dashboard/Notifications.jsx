@@ -76,7 +76,6 @@ import { AuthContext } from '../../context/AuthContext'
 //     }
 // ]
 
-
 // const getRequests = async(setRequest, setPending, setIsLoading) => {
 //     try{
 //         const res = await axios.get(`${api}/api/users/friends/request`)
@@ -91,19 +90,23 @@ import { AuthContext } from '../../context/AuthContext'
 //     }
 // }
 
+const Notifications = ({
+  notificationPageFlag,
+  request,
+  pending,
+  isLoading,
+}) => {
+  const { getRefresh } = useContext(AuthContext)
 
-const Notifications = ({notificationPageFlag, request, pending, isLoading}) => {
-    const { getRefresh } = useContext(AuthContext)
-
-    return(
-        <>
-            {notificationPageFlag? (
-                <Pending  users={pending} isLoading={isLoading}/>
-            ) : (
-                <Request users={request} isLoading={isLoading} />
-            )}
-        </>
-    )
+  return (
+    <>
+      {notificationPageFlag ? (
+        <Pending users={pending} isLoading={isLoading} />
+      ) : (
+        <Request users={request} isLoading={isLoading} />
+      )}
+    </>
+  )
 }
 
 export default Notifications

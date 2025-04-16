@@ -1,123 +1,122 @@
-.notifications__page{
-    grid-column:  2 / 3;
-    padding: 5%;
-    display: grid;
-    grid-template-rows: repeat(auto-fit, minmax(50%, 1fr));
+.notifications__page {
+  grid-column: 2 / 3;
+  padding: 5%;
+  display: grid;
+  grid-template-rows: repeat(auto-fit, minmax(50%, 1fr));
 }
-.pending, .requests{
-    display: grid;
-    grid-template-rows: 3rem 1fr 3rem;
+.pending,
+.requests {
+  display: grid;
+  grid-template-rows: 3rem 1fr 3rem;
 
-    & > h1{
-        color: var(--pri__text);
-        font-family: mainText;
-        font-size: 2rem;
-    }
+  & > h1 {
+    color: var(--pri__text);
+    font-family: mainText;
+    font-size: 2rem;
+  }
 }
 
-.notification__element{
+.notification__element {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  border-radius: 0.5rem;
+  gap: 0.5rem;
+
+  &:hover {
+    background-color: var(--sec__highlight);
+  }
+
+  & > div.info__container > img {
+    height: 3rem;
+    margin-right: 1rem;
+    border-radius: 100%;
+    background-color: var(--shadow);
+  }
+
+  & > div.info__container > p {
+    color: var(--pri__text);
+    font-family: mainText;
+    font-size: 1rem;
+  }
+
+  & > div {
+    margin-left: auto;
+  }
+
+  & > div.info__container {
+    margin: 0;
     display: flex;
     align-items: center;
-    padding: .5rem 1rem .5rem 1rem;
-    border-radius: .5rem;
-    gap: .5rem;
+  }
 
-    &:hover{
-        background-color: var(--sec__highlight);
-    }
+  & > div > button {
+    color: var(--pri__text);
+    font-family: mainText;
+    font-size: 1rem;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background-color: var(--offset__color);
+    margin-left: 3rem;
+  }
 
-
-    & > div.info__container > img{
-        height: 3rem;
-        margin-right: 1rem;
-        border-radius: 100%;
-        background-color: var(--shadow);
-    }
-
-    & > div.info__container > p{
-        color: var(--pri__text);
-        font-family: mainText;
-        font-size: 1rem;
-    }
-
-    & > div{
-        margin-left: auto;
-    }
-
-    & > div.info__container{
-        margin: 0;
-        display: flex;
-        align-items: center;
-    }
-
-    & > div > button{
-        color: var(--pri__text);
-        font-family: mainText;
-        font-size: 1rem;
-        padding: .5rem 1rem .5rem 1rem;
-        border-radius: .5rem;
-        background-color: var(--offset__color);
-        margin-left: 3rem;
-    }
-
-    & .notification__add{
-        background-color: var(--pri__inter__color);
-    }
+  & .notification__add {
+    background-color: var(--pri__inter__color);
+  }
 }
 
-.notifications__buttons{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    padding: 1rem;
+.notifications__buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
 
-    & > button{
-        color: var(--pri__text);
-        font-family: mainText;
-        font-size: 1rem;
-        padding: .5rem 1rem .5rem 1rem;
-        border-radius: .5rem;
-        background-color: var(--offset__color);
-    }
+  & > button {
+    color: var(--pri__text);
+    font-family: mainText;
+    font-size: 1rem;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background-color: var(--offset__color);
+  }
 
-    & >button.prev{
-        grid-column: 1 / 2;
-        justify-self: end;
-        align-self: center;
-    }
+  & > button.prev {
+    grid-column: 1 / 2;
+    justify-self: end;
+    align-self: center;
+  }
 
-    
-    & >button.next{
-        grid-column: 2 / 3;
-        justify-self: start;
-        align-self: center;
-    }
+  & > button.next {
+    grid-column: 2 / 3;
+    justify-self: start;
+    align-self: center;
+  }
 }
 
-.notification__container{
-    display: flex;
+.notification__container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media (max-width: 650px) {
+  .notification__element {
     flex-direction: column;
-    gap: .5rem;
-}
-
-@media (max-width: 650px){
-    .notification__element{
-        flex-direction: column;
-        justify-content: start;
-        gap: 1rem;
-        & > div{
-            margin: 0;
-            width: 100%;
-        }
-
-        & > div > button{
-            margin: 0;
-            width: 100%;
-        }
+    justify-content: start;
+    gap: 1rem;
+    & > div {
+      margin: 0;
+      width: 100%;
     }
 
-    .request__buttons{
-        display: flex;
-        gap: 1rem;
+    & > div > button {
+      margin: 0;
+      width: 100%;
     }
+  }
+
+  .request__buttons {
+    display: flex;
+    gap: 1rem;
+  }
 }

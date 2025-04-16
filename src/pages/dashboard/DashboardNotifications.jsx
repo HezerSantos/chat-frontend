@@ -3,74 +3,70 @@ import '../../assets/styles/Dashboard.css'
 import DashboardNav from '../../components/dashboard/DashboardNav'
 import Notifications from '../../components/dashboard/Notifications'
 import { AuthContext } from '../../context/AuthContext'
-import { AiOutlineLoading } from "react-icons/ai";
+import { AiOutlineLoading } from 'react-icons/ai'
 import LoginError from '../../errors/loginError'
 import axios from 'axios'
 import api from '../../../config'
 
-
-const getRequests = async(setRequest, setPending, setIsLoading) => {
-    try{
-        const res = await axios.get(`${api}/api/users/friends/request`)
-        const request = res.data.requests.receivedRequests
-        const pending = res.data.requests.sentRequests
-        // console.log(res)
-        setRequest(request)
-        setPending(pending)
-        setIsLoading(false)
-    }catch(e){
-        console.error(e)
-    }
+const getRequests = async (setRequest, setPending, setIsLoading) => {
+  try {
+    const res = await axios.get(`${api}/api/users/friends/request`)
+    const request = res.data.requests.receivedRequests
+    const pending = res.data.requests.sentRequests
+    // console.log(res)
+    setRequest(request)
+    setPending(pending)
+    setIsLoading(false)
+  } catch (e) {
+    console.error(e)
+  }
 }
 
-
-
 const DashboardNotifications = () => {
-    const { isAuthenticated, getRefresh, isAuthLoading } = useContext(AuthContext)
-    const dashboardMain = useRef(null)
-    const [ notificationPageFlag, setNotificationPageFlag ] = useState(true)
+  const { isAuthenticated, getRefresh, isAuthLoading } = useContext(AuthContext)
+  const dashboardMain = useRef(null)
+  const [notificationPageFlag, setNotificationPageFlag] = useState(true)
 
-    const [ request, setRequest ] = useState([])
-    const [ pending, setPending ] = useState([])
-    const [ isLoading, setIsLoading ] = useState(true)
-    useEffect(() => {
-        const delay = async() => {
-            await  getRefresh();
-            getRequests(setRequest, setPending, setIsLoading)
-        }
-        delay()
-    }, [])
-    return(
+  const [request, setRequest] = useState([])
+  const [pending, setPending] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  useEffect(() => {
+    const delay = async () => {
+      await getRefresh()
+      getRequests(setRequest, setPending, setIsLoading)
+    }
+    delay()
+  }, [])
+  return (
+    <>
+      {isAuthenticated ? (
+        <main className="dashboard__main" ref={dashboardMain}>
+          <DashboardNav
+            dashboardMain={dashboardMain}
+            notifications={true}
+            notificationPageFlag={notificationPageFlag}
+            setNotificationPageFlag={setNotificationPageFlag}
+          />
+          <Notifications
+            notificationPageFlag={notificationPageFlag}
+            request={request}
+            pending={pending}
+            isLoading={isLoading}
+          />
+        </main>
+      ) : (
         <>
-            {isAuthenticated? (
-                    <main className='dashboard__main' ref={dashboardMain}>
-                    <DashboardNav 
-                        dashboardMain={dashboardMain}
-                        notifications={true} 
-                        notificationPageFlag={notificationPageFlag}
-                        setNotificationPageFlag={setNotificationPageFlag}
-                    />
-                    <Notifications 
-                        notificationPageFlag={notificationPageFlag} 
-                        request={request} 
-                        pending={pending}
-                        isLoading={isLoading}
-                    />
-                </main>
-            ) : (
-                <>
-                    {!isAuthLoading? (
-                        <main className='loading__screen'>
-                            <AiOutlineLoading className='loading'/>
-                        </main>
-                    ) : (
-                        <LoginError />
-                    )}
-                </>
-            )}
-
+          {!isAuthLoading ? (
+            <main className="loading__screen">
+              <AiOutlineLoading className="loading" />
+            </main>
+          ) : (
+            <LoginError />
+          )}
         </>
-    )
+      )}
+    </>
+  )
 }
 
 export default DashboardNotifications

@@ -1,54 +1,143 @@
-.index__auth{
-    position: relative;
-    height: 100vh;
-    min-height: max-content;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+.index__auth {
+  position: relative;
+  height: 100vh;
+  min-height: max-content;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
-.index__auth::after{
-    position: absolute;
-    content: '';
-    inset: 0 0 0 0;
-    background: url('../images/main__hero.png');
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    opacity: 50%;
+.index__auth::after {
+  position: absolute;
+  content: '';
+  inset: 0 0 0 0;
+  background: url('../images/main__hero.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 50%;
 }
 
 .index__auth * {
-    z-index: 3;
-    font-family: mainText;
+  z-index: 3;
+  font-family: mainText;
 }
 
-.index__auth > *{
+.index__auth > * {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.index__header__container {
+  color: var(--pri__text);
+}
+
+.index__header__container > * > h1 {
+  font-size: 5rem;
+  font-weight: 500;
+}
+
+.index__header__container > * > p {
+  color: var(--sec__text);
+  font-weight: 900;
+}
+
+.index__form__container {
+  position: relative;
+  padding: 1rem;
+}
+
+.index__form__container::after {
+  position: absolute;
+  content: '';
+  inset: 0 0 0 0;
+  background: url('../images/moon.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 65%;
+}
+
+.index__auth__form {
+  width: clamp(18.5rem, 50vw, 30.25rem);
+  min-height: 35rem;
+  background: linear-gradient(
+      to bottom,
+      var(--pri__color) 0%,
+      var(--auth__gradient)
+    )
+    100%;
+  border-radius: 1rem;
+  box-shadow: 15px 15px 5px var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 3.5rem 5rem 3.5rem;
+  gap: 1rem;
+}
+
+.index__auth__form > * {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+}
+
+.index__auth__form > * > label {
+  color: var(--sec__text);
+  font-size: 1.125rem;
+}
+
+.index__auth__form > * > input {
+  height: 3.75rem;
+  background-color: var(--pri__inter__color);
+  border: none;
+  border-radius: 1rem;
+  font-size: 1rem;
+  padding-left: 1rem;
+  color: var(--pri__text);
+}
+
+.index__auth__form > * > input:focus {
+  outline: 2px solid var(--offset__color);
+}
+
+.index__auth__form > * > button {
+  background-color: var(--pri__highlight);
+  color: var(--sec__text);
+  height: 3.75rem;
+  border-radius: 1rem;
+}
+
+.index__auth__form > * > button:hover {
+  background-color: var(--pri__highlight__hover);
+}
+
+.index__auth__form > * > a {
+  align-self: flex-end;
+  color: var(--sec__text);
+}
+
+.auth__links {
+  display: flex;
+  justify-content: space-between;
+  & > a {
+    color: var(--sec__text);
+  }
+}
+@media (max-width: 825px) {
+  .index__auth {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-}
-
-
-.index__header__container{
-    color: var(--pri__text);
-}
-
-.index__header__container > * > h1{
-    font-size: 5rem;
-    font-weight: 500;
-}
-
-.index__header__container > * > p{
-    color: var(--sec__text);
-    font-weight: 900;
-}
-
-.index__form__container{
-    position: relative;
-    padding: 1rem;
-}
-
-.index__form__container::after{
+    padding-top: 2rem;
+  }
+  .index__header__container > * > h1 {
+    font-size: 3rem;
+  }
+  .index__auth::before {
     position: absolute;
     content: '';
     inset: 0 0 0 0;
@@ -56,118 +145,32 @@
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    opacity: 65%;
+  }
+
+  .index__header__container > * > p {
+    display: none;
+  }
+  .index__form__container::after {
+    display: none;
+  }
+  .index__auth__form {
+    box-shadow: 5px 5px 5px var(--shadow);
+  }
 }
 
-
-.index__auth__form{
-    width: clamp(18.5rem, 50vw, 30.25rem);
-    min-height: 35rem;
-    background: linear-gradient(to bottom, var(--pri__color) 0%, var(--auth__gradient)) 100%;
-    border-radius: 1rem;
-    box-shadow: 15px 15px 5px var(--shadow);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 5rem 3.5rem 5rem 3.5rem;
-    gap: 1rem;
-}
-
-.index__auth__form > *{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 1rem;
-}
-
-.index__auth__form > * > label{
-    color: var(--sec__text);
-    font-size: 1.125rem;
-}
-
-.index__auth__form > * > input{
-    height: 3.75rem;
-    background-color: var(--pri__inter__color);
-    border: none;
-    border-radius: 1rem;
-    font-size: 1rem;
-    padding-left: 1rem;
-    color: var(--pri__text);
-}
-
-.index__auth__form > * > input:focus{
-    outline: 2px solid var(--offset__color);
-}
-
-.index__auth__form > * > button{
-    background-color: var(--pri__highlight);
-    color: var(--sec__text);
-    height: 3.75rem;
-    border-radius: 1rem;
-}
-
-.index__auth__form > * > button:hover{
-    background-color: var(--pri__highlight__hover);
-}
-
-.index__auth__form > * > a{
-    align-self: flex-end;
-    color: var(--sec__text);
-}
-
-.auth__links{
-    display: flex;
-    justify-content: space-between;
-    & > a{
-        color: var(--sec__text);
-    }
-}
-@media (max-width: 825px){
-    .index__auth{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding-top: 2rem;
-    }
-    .index__header__container > * > h1{
-        font-size: 3rem;
-    }
-    .index__auth::before{
-        position: absolute;
-        content: '';
-        inset: 0 0 0 0;
-        background: url('../images/moon.png');
-        background-position: center;
-        background-size: cover;
-        background-repeat: no-repeat;
-    }
-
-    .index__header__container > * > p{
-        display: none;
-    }
-    .index__form__container::after{
-        display: none;
-    }
-    .index__auth__form{
-        box-shadow: 5px 5px 5px var(--shadow);
-    }
-}
-
-@media (max-width: 600px){
-    .index__auth__form{
-        padding: 1rem;
-        transition: height 1s ease;
-    }
-    .index__auth__form > * > input{
-        height: 2.75rem;
-        border-radius: .5rem;
-        transition: height 1s ease;
-    }
-    .index__auth__form > * > button{
-        height: 2.75rem;
-        border-radius: .5rem;
-        transition: height 1s ease;
-    }
+@media (max-width: 600px) {
+  .index__auth__form {
+    padding: 1rem;
+    transition: height 1s ease;
+  }
+  .index__auth__form > * > input {
+    height: 2.75rem;
+    border-radius: 0.5rem;
+    transition: height 1s ease;
+  }
+  .index__auth__form > * > button {
+    height: 2.75rem;
+    border-radius: 0.5rem;
+    transition: height 1s ease;
+  }
 }

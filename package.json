@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "format": "prettier --write .",
     "commit": "sh -c 'git add -A && git commit -m \"$0\" && git push'",
     "start": "npx http-server ./dist",
     "dev": "vite",
@@ -45,6 +46,7 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
     "jsdom": "^26.0.0",
+    "prettier": "^3.5.3",
     "vite": "^6.2.3",
     "vitest": "^3.0.9"
   }
