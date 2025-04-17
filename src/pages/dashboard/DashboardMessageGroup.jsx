@@ -18,7 +18,7 @@ const getUserGroups = async (
   _sadwv
 ) => {
   try {
-    const payload = _sadwv()
+    const payload = await _sadwv()
     // console.log(payload)
     const res = await axios.get(`${api}/api/groups`, {
       headers: {

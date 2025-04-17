@@ -18,13 +18,17 @@ function App() {
     const getCsrf = async () => {
       try {
         const cookie = document.cookie.split('=')[1]
-        if (!cookie) {
-          const res = await axios.get(`${api}/api/auth/csrf`)
-          console.log(res.status)
-        }
+        const res = await axios.get(`${api}/api/auth/csrf`)
+        // console.log(cookie)
       } catch (e) {}
     }
     getCsrf()
+    const interval = setInterval(() => {
+      console.log("New Csrf")
+      getCsrf()
+    }, 150000)
+
+    return () => clearInterval(interval)
   }, [])
   return (
     <AuthProvider>

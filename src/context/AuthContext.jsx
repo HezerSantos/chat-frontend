@@ -42,10 +42,12 @@ const AuthProvider = ({ children }) => {
 
 
 
-  const _sadwv = () => {
+  const _sadwv = async() => {
     const cookie = document.cookie.split('=')[1]
+    if(!cookie){
+      console.log("No cookie")
+    }
     const payload = decodeJWT(cookie)
-
     const token = payload._fqekx
     const key = tokens[payload.oqi_wd][0]
     const value = tokens[payload.oqi_wd][1]
@@ -60,7 +62,7 @@ const AuthProvider = ({ children }) => {
 
   const getRefresh = async () => {
     try {
-      const payload = _sadwv()
+      const payload = await _sadwv()
       const res = await axios.get(`${api}/api/auth/refresh`, {
         headers: {
           _sadwv: payload,

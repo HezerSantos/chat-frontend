@@ -12,7 +12,7 @@ const handleInput = (e, setInput) => {
 const handleSubmit = async (e, groupId, message, _sadwv) => {
   e.preventDefault()
   try {
-    const payload = _sadwv()
+    const payload = await _sadwv()
     const sanitizedMessage = DOMPurify.sanitize(message)
     const res = await axios.post(`${api}/api/groups/${groupId}/messages`, {
       message: sanitizedMessage,
@@ -28,7 +28,7 @@ const handleSubmit = async (e, groupId, message, _sadwv) => {
 
 const getGroupMessages = async (groupId, setGroupMessages, userId, _sadwv) => {
   try {
-    const payload = _sadwv()
+    const payload = await _sadwv()
     const res = await axios.get(`${api}/api/groups/${groupId}/messages`, {
       headers: {
         _sadwv: payload,
