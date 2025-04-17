@@ -1,15 +1,20 @@
 import '../../assets/styles/AddGroup.css'
 import api from '../../../config'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { AiOutlineLoading } from 'react-icons/ai'
-
-const handleSubmit = async (e, setGroupName, setIsLoading, setErrors) => {
+import { AuthContext } from '../../context/AuthContext'
+const handleSubmit = async (e, setGroupName, setIsLoading, setErrors, _sadwv) => {
   e.preventDefault()
   try {
     setIsLoading(true)
+    const payload = _sadwv()
     const res = await axios.post(`${api}/api/groups`, {
       groupName: e.target.groupName.value,
+    }, {
+      headers: {
+        _sadwv: payload,
+      }
     })
 
     setGroupName('')
@@ -26,6 +31,7 @@ const handleInput = (e, setInput) => {
   setInput(e.target.value)
 }
 const AddGroup = () => {
+  const { _sadwv } = useContext(AuthContext)
   const [groupName, setGroupName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState(null)
@@ -36,7 +42,7 @@ const AddGroup = () => {
         <form
           className="add__group"
           onSubmit={(e) =>
-            handleSubmit(e, setGroupName, setIsLoading, setErrors)
+            handleSubmit(e, setGroupName, setIsLoading, setErrors, _sadwv)
           }
         >
           <div>

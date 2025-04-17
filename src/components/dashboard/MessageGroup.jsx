@@ -9,12 +9,17 @@ const handleInput = (e, setInput) => {
   setInput(e.target.value)
 }
 
-const handleSubmit = async (e, groupId, message) => {
+const handleSubmit = async (e, groupId, message, _sadwv) => {
   e.preventDefault()
   try {
+    const payload = _sadwv()
     const sanitizedMessage = DOMPurify.sanitize(message)
     const res = await axios.post(`${api}/api/groups/${groupId}/messages`, {
       message: sanitizedMessage,
+    }, {
+      headers: {
+        _sadwv: payload,
+      },
     })
   } catch (e) {
     console.error(e)
@@ -55,7 +60,8 @@ const sendMessage = async (
   message,
   setMessage,
   username,
-  groupId
+  groupId,
+  _sadwv
 ) => {
   e.preventDefault()
   if (ws) {
@@ -71,7 +77,7 @@ const sendMessage = async (
       })
     )
 
-    handleSubmit(e, groupId, message)
+    handleSubmit(e, groupId, message, _sadwv)
   }
 
   setMessage('')
@@ -165,7 +171,7 @@ const MessageGroup = ({ groupId }) => {
               setMessage,
               username,
               groupId,
-              handleSubmit
+              _sadwv
             )
           }
         >

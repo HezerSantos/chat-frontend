@@ -49,14 +49,12 @@ const AuthProvider = ({ children }) => {
     const token = payload._fqekx
     const key = tokens[payload.oqi_wd][0]
     const value = tokens[payload.oqi_wd][1]
-    console.log('OG:', token)
     const newToken =
       token.slice(0, 7) +
       key +
       token.slice(7, 33) +
       value +
       token.slice(32, 65)
-    console.log("New:", newToken)
     return newToken
   }
 
