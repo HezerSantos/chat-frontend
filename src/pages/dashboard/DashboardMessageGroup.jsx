@@ -19,7 +19,6 @@ const getUserGroups = async (
 ) => {
   try {
     const payload = await _sadwv()
-    // console.log(payload)
     const res = await axios.get(`${api}/api/groups`, {
       headers: {
         _sadwv: payload,
@@ -56,7 +55,7 @@ const DashboardMessageGroup = () => {
   useEffect(() => {
     const delay = async () => {
       await getRefresh()
-      getUserGroups(
+      await getUserGroups(
         setUserGroups,
         setMessageGroup,
         setSelectedGroupId,

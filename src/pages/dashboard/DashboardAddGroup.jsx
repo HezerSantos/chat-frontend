@@ -7,11 +7,11 @@ import { AiOutlineLoading } from 'react-icons/ai'
 import LoginError from '../../errors/loginError'
 
 const DashboardAddGroup = () => {
-  const { isAuthenticated, getRefresh, isAuthLoading } = useContext(AuthContext)
+  const { isAuthenticated, getRefresh, isAuthLoading, _sadwv } = useContext(AuthContext)
   const dashboardMain = useRef(null)
 
   useEffect(() => {
-    getRefresh()
+    getRefresh(_sadwv)
   }, [])
 
   return (

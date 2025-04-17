@@ -17,7 +17,6 @@ function App() {
   useEffect(() => {
     const getCsrf = async () => {
       try {
-        const cookie = document.cookie.split('=')[1]
         const res = await axios.get(`${api}/api/auth/csrf`)
         // console.log(cookie)
       } catch (e) {}
