@@ -1,13 +1,19 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import defaultProfile from '../../assets/images/defaultProfile.webp'
 import axios from 'axios'
 import api from '../../../config'
 import { AiOutlineLoading } from 'react-icons/ai'
-const deleteFriend = async (e, userId, setShown, setIsLoading) => {
+import { AuthContext } from '../../context/AuthContext'
+const deleteFriend = async (e, userId, setShown, setIsLoading, _sadwv) => {
   e.preventDefault()
   try {
     setIsLoading(true)
-    const res = await axios.delete(`${api}/api/users/${userId}/friends`)
+    const payload = await _sadwv()
+    const res = await axios.delete(`${api}/api/users/${userId}/friends`, {
+      headers: {
+        _sadwv: payload,
+      }
+    })
     setShown(false)
   } catch (e) {
     setIsLoading(false)
@@ -16,6 +22,7 @@ const deleteFriend = async (e, userId, setShown, setIsLoading) => {
 }
 
 const FriendElement = ({ userId, username, profilePicture = null }) => {
+  const  { _sadwv } = useContext(AuthContext)
   const [shown, setShown] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   return (
@@ -32,7 +39,7 @@ const FriendElement = ({ userId, username, profilePicture = null }) => {
           <div>
             <button
               disabled={isLoading}
-              onClick={(e) => deleteFriend(e, userId, setShown, setIsLoading)}
+              onClick={(e) => deleteFriend(e, userId, setShown, setIsLoading, _sadwv)}
             >
               {!isLoading ? (
                 <>Delete</>

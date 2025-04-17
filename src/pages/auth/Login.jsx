@@ -6,13 +6,18 @@ import api from '../../../config'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { AuthContext } from '../../context/AuthContext'
 
-const login = async (e, setLoginError, setIsLoading, navigate, userLogin) => {
+const login = async (e, setLoginError, setIsLoading, navigate, userLogin, username, password, _sadwv) => {
   e.preventDefault()
   try {
     setIsLoading(true)
+    const payload = await _sadwv()
     const res = await axios.post(`${api}/api/auth/login`, {
-      username: e.target.username.value,
-      password: e.target.password.value,
+      username: username,
+      password: password,
+    }, {
+      headers: {
+        _sadwv: payload,
+      }
     })
     // console.log(res)
     setIsLoading(false)
@@ -30,7 +35,7 @@ const handleInput = (e, setInput) => {
 }
 
 const Login = () => {
-  const { isAuthenticated, userLogin, userLogout } = useContext(AuthContext)
+  const { isAuthenticated, userLogin, userLogout, _sadwv } = useContext(AuthContext)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState(null)
@@ -62,7 +67,7 @@ const Login = () => {
         <form
           className="index__auth__form"
           onSubmit={(e) =>
-            login(e, setLoginError, setIsLoading, navigate, userLogin)
+            login(e, setLoginError, setIsLoading, navigate, userLogin, username, password, _sadwv)
           }
         >
           {!isLoading ? (

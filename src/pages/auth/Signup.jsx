@@ -1,24 +1,33 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useContext } from 'react'
 import '../../assets/styles/Auth.css'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import api from '../../../config'
 import { AiOutlineLoading } from 'react-icons/ai'
-
+import { AuthContext } from '../../context/AuthContext'
 const createUser = async (
   e,
   setUsernameError,
   setPasswordError,
   setIsLoading,
-  navigate
+  navigate,
+  username,
+  password,
+  confirmPassword,
+  _sadwv
 ) => {
   e.preventDefault()
   try {
     setIsLoading(true)
+    const payload = await _sadwv()
     const res = await axios.post(`${api}/api/users`, {
-      username: e.target.username.value,
-      password: e.target.password.value,
-      confirmPassword: e.target.confirmPassword.value,
+      username: username,
+      password: password,
+      confirmPassword: confirmPassword,
+    }, {
+      headers: {
+        _sadwv: payload,
+      }
     })
     console.log(res)
     setIsLoading(false)
@@ -46,6 +55,7 @@ const handleInput = (e, setInput) => {
 }
 
 const Signup = () => {
+  const  { _sadwv } = useContext(AuthContext)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -96,7 +106,11 @@ const Signup = () => {
               setUsernameError,
               setPasswordError,
               setIsLoading,
-              navigate
+              navigate,
+              username,
+              password,
+              confirmPassword,
+              _sadwv
             )
           }
         >

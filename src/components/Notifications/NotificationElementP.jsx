@@ -2,18 +2,22 @@ import defaultProfile from '../../assets/images/defaultProfile.webp'
 import api from '../../../config'
 import axios from 'axios'
 import { AiOutlineLoading } from 'react-icons/ai'
-import { useState } from 'react'
-
-const handleDelete = async (e, receiverId, setShown, setIsLoading) => {
+import { useState, useContext } from 'react'
+import { AuthContext } from '../../context/AuthContext'
+const handleDelete = async (e, receiverId, setShown, setIsLoading, _sadwv) => {
   e.preventDefault()
   try {
     setIsLoading(true)
-    // console.log(receiverId)
+    const payload = await _sadwv()
     const res = await axios.delete(
-      `${api}/api/users/${receiverId}/friends/request/pending`
+      `${api}/api/users/${receiverId}/friends/request/pending`,
+      {
+        headers: {
+          _sadwv: payload,
+        }
+      }
     )
 
-    console.log(res)
     setShown(false)
   } catch (e) {
     setIsLoading(false)
@@ -22,6 +26,7 @@ const handleDelete = async (e, receiverId, setShown, setIsLoading) => {
 }
 
 const NotificationElementP = ({ userId, username, profilePicture = null }) => {
+  const  { _sadwv } = useContext(AuthContext)
   const [shown, setShown] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   return (
@@ -29,7 +34,7 @@ const NotificationElementP = ({ userId, username, profilePicture = null }) => {
       {shown && (
         <form
           className="notification__element"
-          onSubmit={(e) => handleDelete(e, userId, setShown, setIsLoading)}
+          onSubmit={(e) => handleDelete(e, userId, setShown, setIsLoading, _sadwv)}
         >
           <div className="info__container">
             <img

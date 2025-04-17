@@ -9,9 +9,14 @@ import MyFriends from '../../components/Friends/MyFriends'
 import _ from 'lodash'
 import axios from 'axios'
 import api from '../../../config'
-const getUsers = async (setUsers, setFindLoading) => {
+const getUsers = async (setUsers, setFindLoading, _sadwv) => {
   try {
-    const res = await axios.get(`${api}/api/users`)
+    const payload = await _sadwv()
+    const res = await axios.get(`${api}/api/users`, {
+      headers: {
+        _sadwv: payload
+      }
+    })
     setUsers(res.data.users)
     setFindLoading(false)
   } catch (e) {
@@ -19,9 +24,14 @@ const getUsers = async (setUsers, setFindLoading) => {
   }
 }
 
-const getFriends = async (setMyFriends, setMyFriendsLoading) => {
+const getFriends = async (setMyFriends, setMyFriendsLoading, _sadwv) => {
   try {
-    const res = await axios.get(`${api}/api/users/friends`)
+    const payload = await _sadwv()
+    const res = await axios.get(`${api}/api/users/friends`, {
+      headers: {
+        _sadwv: payload
+      }
+    })
     const friends = res.data.friends.friendsAsUser
     setMyFriends(friends)
     setMyFriendsLoading(false)
@@ -31,7 +41,7 @@ const getFriends = async (setMyFriends, setMyFriendsLoading) => {
 }
 
 const DashboardFriends = () => {
-  const { isAuthenticated, getRefresh, isAuthLoading } = useContext(AuthContext)
+  const { isAuthenticated, getRefresh, isAuthLoading, _sadwv } = useContext(AuthContext)
   const [friendPageFlag, setFriendPageFlag] = useState(true)
   const [users, setUsers] = useState([])
   const [findLoading, setFindLoading] = useState(true)
@@ -44,8 +54,8 @@ const DashboardFriends = () => {
   useEffect(() => {
     const delay = async () => {
       await getRefresh()
-      getUsers(setUsers, setFindLoading)
-      getFriends(setMyFriends, setMyFriendsLoading)
+      getUsers(setUsers, setFindLoading, _sadwv)
+      getFriends(setMyFriends, setMyFriendsLoading, _sadwv)
     }
 
     const initiateMaxUsers = async () => {

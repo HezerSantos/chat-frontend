@@ -8,9 +8,14 @@ import LoginError from '../../errors/loginError'
 import axios from 'axios'
 import api from '../../../config'
 
-const getRequests = async (setRequest, setPending, setIsLoading) => {
+const getRequests = async (setRequest, setPending, setIsLoading, _sadwv) => {
   try {
-    const res = await axios.get(`${api}/api/users/friends/request`)
+    const payload = await _sadwv()
+    const res = await axios.get(`${api}/api/users/friends/request`, {
+      headers: {
+        _sadwv: payload
+      }
+    })
     const request = res.data.requests.receivedRequests
     const pending = res.data.requests.sentRequests
     // console.log(res)
@@ -23,7 +28,7 @@ const getRequests = async (setRequest, setPending, setIsLoading) => {
 }
 
 const DashboardNotifications = () => {
-  const { isAuthenticated, getRefresh, isAuthLoading } = useContext(AuthContext)
+  const { isAuthenticated, getRefresh, isAuthLoading, _sadwv } = useContext(AuthContext)
   const dashboardMain = useRef(null)
   const [notificationPageFlag, setNotificationPageFlag] = useState(true)
 
@@ -33,7 +38,7 @@ const DashboardNotifications = () => {
   useEffect(() => {
     const delay = async () => {
       await getRefresh()
-      getRequests(setRequest, setPending, setIsLoading)
+      getRequests(setRequest, setPending, setIsLoading, _sadwv)
     }
     delay()
   }, [])

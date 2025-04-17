@@ -44,9 +44,7 @@ const AuthProvider = ({ children }) => {
 
   const _sadwv = async() => {
     const cookie = document.cookie.split('=')[1]
-    if(!cookie){
-      console.log("No cookie")
-    }
+    console.log()
     const payload = decodeJWT(cookie)
     const token = payload._fqekx
     const key = tokens[payload.oqi_wd][0]

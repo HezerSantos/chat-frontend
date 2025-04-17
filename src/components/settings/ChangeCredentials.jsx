@@ -1,9 +1,9 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useContext } from 'react'
 import '../../assets/styles/Settings.css'
 import axios from 'axios'
 import api from '../../../config'
 import { AiOutlineLoading } from 'react-icons/ai'
-
+import { AuthContext } from '../../context/AuthContext'
 import DOMPurify from 'dompurify'
 const openModal = (e, modal) => {
   e.preventDefault()
@@ -27,7 +27,8 @@ const handleSubmit = async (
   setNewConfirmPassword,
   setVerify,
   modal,
-  setIsLoading
+  setIsLoading,
+  _sadwv
 ) => {
   e.preventDefault()
   try {
@@ -36,12 +37,16 @@ const handleSubmit = async (
     const password = DOMPurify.sanitize(newPassword)
     const confirmPassword = DOMPurify.sanitize(newConfrimPassword)
     const sVerify = DOMPurify.sanitize(verify)
-
+    const payload = await _sadwv()
     const res = await axios.put(`${api}/api/users`, {
       username: username,
       password: password,
       confirmPassword: confirmPassword,
       verify: sVerify,
+    }, {
+      headers: {
+        _sadwv: payload,
+      }
     })
 
     setNewUsername('')
@@ -66,6 +71,7 @@ const handleInput = (e, setInput) => {
 }
 
 const ChangeCredentials = () => {
+  const  { _sadwv } = useContext(AuthContext)
   const modal = useRef(null)
   const [newUsername, setNewUsername] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -151,7 +157,8 @@ const ChangeCredentials = () => {
                       setNewConfirmPassword,
                       setVerify,
                       modal,
-                      setIsLoading
+                      setIsLoading,
+                      _sadwv
                     )
                   }
                 >

@@ -8,7 +8,7 @@ const handleSubmit = async (e, setGroupName, setIsLoading, setErrors, _sadwv) =>
   e.preventDefault()
   try {
     setIsLoading(true)
-    const payload = _sadwv()
+    const payload = await _sadwv()
     const res = await axios.post(`${api}/api/groups`, {
       groupName: e.target.groupName.value,
     }, {
