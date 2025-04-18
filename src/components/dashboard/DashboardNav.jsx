@@ -60,6 +60,10 @@ const handleMyFriends = (setFriendPageFlag) => {
   setFriendPageFlag(false)
 }
 
+const handleGroupOptions = (groupId) => {
+
+} 
+
 const DashboardNav = ({
   dashboardMain,
   messagePage = false,
@@ -78,6 +82,9 @@ const DashboardNav = ({
   setSelectedGroupId,
   userGroups,
   joinedGroups,
+  addMembers,
+  removeMembers,
+  currentAddMembers,
 }) => {
   const { ws, setWs } = useContext(AuthContext)
   const toggleButton = useRef(null)
@@ -97,6 +104,7 @@ const DashboardNav = ({
   useEffect(() => {
     selectedGroup.current?.classList.add('dashboard__sub__selected')
   }, [selectedGroupId])
+
 
   return (
     <>
@@ -242,7 +250,9 @@ const DashboardNav = ({
               </div>
               <ul className="dashboard__group__options">
                 <li>
-                  <button>Group Options</button>
+                  {selectedGroupId && (
+                    <button onClick={(e) => handleGroupOptions()}>Group Options</button>
+                  )}
                 </li>
               </ul>
             </>

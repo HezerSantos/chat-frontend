@@ -8,7 +8,7 @@ import LoginError from '../../errors/loginError'
 import axios from 'axios'
 import api from '../../../config'
 import MessageGroup from '../../components/dashboard/MessageGroup'
-
+import GroupOptions from '../../components/dashboard/GroupOptions'
 const getUserGroups = async (
   setUserGroups,
   setMessageGroup,
@@ -25,8 +25,8 @@ const getUserGroups = async (
       },
     })
     if (res.data.userGroups.length !== 0) {
-      setMessageGroup(
-        <MessageGroup
+      setMessageGroup( //Change back to MessageGroup
+        <GroupOptions
           key={res.data.userGroups[0].id}
           groupId={res.data.userGroups[0].id}
         />
@@ -50,6 +50,9 @@ const DashboardMessageGroup = () => {
   const [userGroups, setUserGroups] = useState(null)
   const [joinedGroups, setJoinedGroups] = useState(null)
 
+  const [ addMembers, setAddMembers ] = useState([])
+  const [ currentAddMembers, setCurrentAddMembers ] = useState([])
+  const [ removeMembers, setRemoveMembers ] = useState([])
   const dashboardMain = useRef(null)
 
   useEffect(() => {
@@ -79,6 +82,10 @@ const DashboardMessageGroup = () => {
             setSelectedGroupId={setSelectedGroupId}
             userGroups={userGroups} //
             joinedGroups={joinedGroups}
+            addMembers={addMembers}
+            currentAddMembers={currentAddMembers}
+            removeMembers={removeMembers}
+            setCurrentAddMembers={setCurrentAddMembers}
           />
           {messageGroup ? (
             messageGroup
