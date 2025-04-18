@@ -40,14 +40,17 @@ const AuthProvider = ({ children }) => {
     return decoded
   }
 
-
-
-  const _sadwv = async() => {
+  const getCookie = (tokenName) => {
     let cookies = document.cookie.split(";")
     cookies = cookies.map(cookie => cookie.trim())
     cookies = cookies.map(cookie => cookie.split("="))
     cookies = new Map(cookies)
-    const cookie = cookies.get("_sxrfa")
+    return cookies.get(tokenName)
+  }
+
+
+  const _sadwv = async() => {
+    const cookie = getCookie("_sxrfa")
     const payload = decodeJWT(cookie)
     const token = payload._fqekx
     const key = tokens[payload.oqi_wd][0]
@@ -63,11 +66,7 @@ const AuthProvider = ({ children }) => {
 
   const getRefresh = async () => {
     try {
-      let cookies = document.cookie.split(";")
-      cookies = cookies.map(cookie => cookie.trim())
-      cookies = cookies.map(cookie => cookie.split("="))
-      cookies = new Map(cookies)
-      const cookie = cookies.get("asiw_")
+      const cookie = getCookie("asiw_")
       const payload = decodeJWT(cookie)
       const res = await axios.get(`${api}/api/auth/refresh`, {
         headers: {

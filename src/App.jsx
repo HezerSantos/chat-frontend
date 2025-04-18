@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Navigate, Outlet } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
+import { AiOutlineLoading } from 'react-icons/ai'
 import api from '../config'
+axios.defaults.withCredentials = true
 function App() {
-  axios.defaults.withCredentials = true
+  const [ isLoading, setIsLoading ] = useState(false)
   if (import.meta.env.VITE_NODE_ENV === 'dev') {
     useEffect(() => {
       // console.log = () => {};
@@ -18,7 +20,7 @@ function App() {
     const getCsrf = async () => {
       try {
         const res = await axios.get(`${api}/api/auth/csrf`)
-        // console.log(cookie)
+        setIsLoading(true)
       } catch (e) {}
     }
     getCsrf()
@@ -29,9 +31,17 @@ function App() {
 
     return () => clearInterval(interval)
   }, [])
+
   return (
     <AuthProvider>
-      <Outlet />
+      {!isLoading? (
+        <main className="loading__screen">
+          <AiOutlineLoading className="loading" />
+        </main>
+      ) : (
+
+        <Outlet />
+      )}
     </AuthProvider>
   )
 }
