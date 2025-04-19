@@ -4,7 +4,11 @@ import { FaArrowLeft } from 'react-icons/fa'
 import AddMember from '../Groups/AddMember'
 import RemoveMember from '../Groups/RemoveMember'
 import defaultProfile from '../../assets/images/defaultProfile.webp'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
+import { AuthContext } from '../../context/AuthContext'
+import axios from 'axios'
+import api from '../../../config'
+import Loading from '../Loading'
 const users = [
 //   {
 //     username: 'Bob',
@@ -110,12 +114,59 @@ const handlePrev = (setCurrentPage, addMembers, setPrevButtonFlag, setNextButton
   })
 }
 
+const getGroupMembers = async(groupId, _sadwv, setRemoveMembers) => {
+  try{
+    const payload = await _sadwv()
+    const res = await axios.get(`${api}/api/groups/${groupId}/users`, {
+      headers: {
+        _sadwv: payload,
+      }
+    })
+    setRemoveMembers(res.data.groupMembers)
+    return res.data.groupMembers
+  } catch(e){
+    console.error(e)
+  }
+}
+
+const getFriends = async(setMyFriends, _sadwv) => {
+try{
+  const payload = await _sadwv()
+  const res = await axios.get(`${api}/api/users/friends`, {
+    headers: {
+      _sadwv: payload,
+    }
+  })
+  // console.log(res)
+  setMyFriends(res.data.friends.friendsAsUser)
+} catch(e) {
+  console.error(e)
+}
+}
+
+const getFiltered = (myFriends, removeMembers) => {
+  const memberIds = new Set(removeMembers.map(member => member.user.id))
+
+  const filteredFriends = myFriends.filter(friend => !memberIds.has(friend.friendId))
+  return filteredFriends
+}
+
+
+
 // 
-const GroupOptions = ({groupId, addMembers, removeMembers, currentAddMembers, currentPage, setCurrentPage, setCurrentAddMembers}) => {
+const GroupOptions = ({groupId}) => {
+  const { getRefresh, _sadwv } = useContext(AuthContext)
   const [ prevButtonFlag, setPrevButtonFlag ] = useState(false)
   const [ nextButtonFlag, setNextButtonFlag ] = useState(false)
-    const [ filteredFriends, setFilteredFriends ] = useState(currentAddMembers)
 
+
+  const [addMembers, setAddMembers] = useState([])
+  const [currentAddMembers, setCurrentAddMembers] = useState([])
+  const [currentPage, setCurrentPage] = useState(null)
+  const [removeMembers, setRemoveMembers] = useState([])
+  const [ myFriends, setMyFriends ] = useState([])
+
+  const [ isLoading, setIsLoading ] = useState(true)
 
   useEffect(() => {
     if(addMembers.length > 1){
@@ -124,21 +175,42 @@ const GroupOptions = ({groupId, addMembers, removeMembers, currentAddMembers, cu
   }, [addMembers])
 
   useEffect(() => {
-    if(currentAddMembers){
-        setFilteredFriends(prev => {
-            let filtered = [...prev]
-            const memberIds = new Set(removeMembers.map(user => user.user.id))
-            filtered = filtered.filter(friend => !memberIds.has(friend.friendId))
-            return filtered
-        })
+    const delay = async() => {
+      await getRefresh()
+      await getGroupMembers(groupId, _sadwv, setRemoveMembers)
+      await getFriends(setMyFriends, _sadwv)
     }
-  }, [removeMembers, currentPage])
+
+    delay()
+  }, [])
 
   useEffect(() => {
-  }, [filteredFriends])
+    const filteredFriends = getFiltered(myFriends, removeMembers)
+    const userSplit = chunkArray(filteredFriends, 5)
+    setAddMembers(userSplit)
+  }, [myFriends])
+
+  useEffect(() => {
+    setCurrentAddMembers(addMembers[0])
+  }, [addMembers])
+
+  useEffect(() => {
+    setCurrentAddMembers(addMembers[currentPage])
+  }, [currentPage])
+
+  useEffect(() => {
+    if(currentAddMembers && currentAddMembers.length > 0){
+      setIsLoading(false)
+    }
+  }, [currentAddMembers])
 
   return (
-    <>
+    isLoading? (
+      <>
+        <Loading />
+      </>
+    ) : (
+      <>
       <section className="group__options">
         <div className="options__header">
           <form>
@@ -156,19 +228,17 @@ const GroupOptions = ({groupId, addMembers, removeMembers, currentAddMembers, cu
         <div className="member">
           <h1>Add Member</h1>
           <div>
-            {(currentAddMembers && (currentAddMembers.length >= 1)) && (
-                filteredFriends.map((user) => {
-                    return (
-                        <AddMember
-                        key={`Member${user.friendId}`}
-                        userId={user.friendId}
-                        username={user.friend.username}
-                        profilePicture={user.profilePicture}
-                        groupId={groupId}
-                        />
-                    )
-                })
-            )}
+            {currentAddMembers.map((user) => {
+                      return (
+                          <AddMember
+                          key={`Member${user.friendId}`}
+                          userId={user.friendId}
+                          username={user.friend.username}
+                          profilePicture={user.profilePicture}
+                          groupId={groupId}
+                          />
+                      )
+              })}
           </div>
           <div className="button__container">
             {prevButtonFlag && (
@@ -210,6 +280,7 @@ const GroupOptions = ({groupId, addMembers, removeMembers, currentAddMembers, cu
         </section>
       </section>
     </>
+    )
   )
 }
 

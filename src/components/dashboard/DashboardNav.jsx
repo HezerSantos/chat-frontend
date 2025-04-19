@@ -62,48 +62,15 @@ const handleMyFriends = (setFriendPageFlag) => {
   setFriendPageFlag(false)
 }
 
-const getGroupMembers = async(groupId, _sadwv, setRemoveMembers) => {
-  try{
-    const payload = await _sadwv()
-    const res = await axios.get(`${api}/api/groups/${groupId}/users`, {
-      headers: {
-        _sadwv: payload,
-      }
-    })
-    setRemoveMembers(res.data.groupMembers)
-    return res.data.groupMembers
-  } catch(e){
-    console.error(e)
-  }
-}
 
 const handleGroupOptions = async(
-  setMessageGroup, 
   groupId,
-  addMembers,
-  currentAddMembers,
-  removeMembers,
-  setCurrentAddMembers,
-  currentPage,
-  setCurrentPage,
-  getRefresh,
-  _sadwv,
-  setRemoveMembers
+  setMessageGroup
 ) => {
-  setMessageGroup(<Loading/>)
-  await getRefresh()
-  const members = await getGroupMembers(groupId, _sadwv, setRemoveMembers)
-
   setMessageGroup(
     <GroupOptions
       key={groupId}
       groupId={groupId}
-      addMembers={addMembers}
-      currentAddMembers={currentAddMembers}
-      removeMembers={members}
-      setCurrentAddMembers={setCurrentAddMembers}
-      currentPage={currentPage}
-      setCurrentPage={setCurrentPage}
   />
   )
 }
@@ -126,13 +93,6 @@ const DashboardNav = ({
   setSelectedGroupId,
   userGroups,
   joinedGroups,
-  addMembers,
-  removeMembers,
-  currentAddMembers,
-  setCurrentAddMembers,
-  setCurrentPage,
-  currentPage,
-  setRemoveMembers,
   groupsLoading
 }) => {
   const { ws, setWs, getRefresh, _sadwv } = useContext(AuthContext)
@@ -305,18 +265,9 @@ const DashboardNav = ({
                   {groupOptionsFlag && (
                     <li>
                     {selectedGroupId && (
-                      <button onClick={(e) => handleGroupOptions(  
+                      <button onClick={(e) => handleGroupOptions(
+                        selectedGroupId,  
                         setMessageGroup, 
-                        selectedGroupId,
-                        addMembers,
-                        currentAddMembers,
-                        removeMembers,
-                        setCurrentAddMembers,
-                        currentPage,
-                        setCurrentPage,
-                        getRefresh,
-                        _sadwv,
-                        setRemoveMembers
                         )}
                       >
                         Group Options
