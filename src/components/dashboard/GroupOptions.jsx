@@ -114,7 +114,7 @@ const handlePrev = (setCurrentPage, addMembers, setPrevButtonFlag, setNextButton
 const GroupOptions = ({groupId, addMembers, removeMembers, currentAddMembers, currentPage, setCurrentPage, setCurrentAddMembers}) => {
   const [ prevButtonFlag, setPrevButtonFlag ] = useState(false)
   const [ nextButtonFlag, setNextButtonFlag ] = useState(false)
-
+    const [ filteredFriends, setFilteredFriends ] = useState(currentAddMembers)
 
 
   useEffect(() => {
@@ -123,6 +123,19 @@ const GroupOptions = ({groupId, addMembers, removeMembers, currentAddMembers, cu
     }
   }, [addMembers])
 
+  useEffect(() => {
+    if(currentAddMembers){
+        setFilteredFriends(prev => {
+            let filtered = [...prev]
+            const memberIds = new Set(removeMembers.map(user => user.user.id))
+            filtered = filtered.filter(friend => !memberIds.has(friend.friendId))
+            return filtered
+        })
+    }
+  }, [removeMembers, currentPage])
+
+  useEffect(() => {
+  }, [filteredFriends])
 
   return (
     <>
@@ -144,7 +157,7 @@ const GroupOptions = ({groupId, addMembers, removeMembers, currentAddMembers, cu
           <h1>Add Member</h1>
           <div>
             {(currentAddMembers && (currentAddMembers.length >= 1)) && (
-                currentAddMembers.map((user) => {
+                filteredFriends.map((user) => {
                     return (
                         <AddMember
                         key={`Member${user.friendId}`}
