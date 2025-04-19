@@ -23,7 +23,6 @@ const toggleNavBar = (e, toggleButton, dashboardMain, dashboardNav) => {
 
 const handleNavigate = (e, route, navigate, ws, setWs) => {
   if (ws) {
-    console.log('closing')
     ws.close()
     setWs(null)
   }

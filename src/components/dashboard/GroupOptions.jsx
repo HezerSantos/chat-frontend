@@ -4,11 +4,13 @@ import { FaArrowLeft } from 'react-icons/fa'
 import AddMember from '../Groups/AddMember'
 import RemoveMember from '../Groups/RemoveMember'
 import defaultProfile from '../../assets/images/defaultProfile.webp'
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext, useRef } from 'react'
 import { AuthContext } from '../../context/AuthContext'
 import axios from 'axios'
 import api from '../../../config'
 import Loading from '../Loading'
+import { useNavigate } from 'react-router-dom'
+import { AiOutlineLoading } from 'react-icons/ai'
 const users = [
 //   {
 //     username: 'Bob',
@@ -153,21 +155,72 @@ const getFiltered = (myFriends, removeMembers) => {
 
 
 
-// 
+const handleInput = (e, setInput) => {
+  setInput(e.target.value)
+}
+
+const handleNameChange = async(e, newName, _sadwv, groupId, navigate) => {
+  e.preventDefault()
+  try{
+    if(newName.trim().length === 0){
+      return
+    }
+    const payload = await _sadwv()
+    const res = await axios.put(`${api}/api/groups/${groupId}`, {
+      newName: newName
+    }, {
+      headers: {
+        _sadwv: payload,
+      }
+    })
+    window.location.reload()
+  } catch(e){
+    console.error(e)
+  }
+}
+
+const handleDelete = async(groupId, _sadwv, password, setButtonLoading) => {
+  try{
+    setButtonLoading(true)
+    const payload = await _sadwv()
+    const res = await axios.delete(`${api}/api/groups/${groupId}`, {
+      data: {
+        password: password
+      },
+      headers: {
+        _sadwv: payload
+      }
+    });
+    window.location.reload()
+  } catch(e) {
+    setButtonLoading(false)
+    console.error(e)
+  }
+}
+
+const toggleModal = (modal, flag) => {
+  if(flag){
+    modal.current?.showModal()
+  }
+  if(!flag){
+    modal.current?.close()
+  }
+}
 const GroupOptions = ({groupId}) => {
   const { getRefresh, _sadwv } = useContext(AuthContext)
   const [ prevButtonFlag, setPrevButtonFlag ] = useState(false)
   const [ nextButtonFlag, setNextButtonFlag ] = useState(false)
-
-
   const [addMembers, setAddMembers] = useState([])
   const [currentAddMembers, setCurrentAddMembers] = useState([])
   const [currentPage, setCurrentPage] = useState(null)
   const [removeMembers, setRemoveMembers] = useState([])
   const [ myFriends, setMyFriends ] = useState([])
-
   const [ isLoading, setIsLoading ] = useState(true)
+  const [ newName, setNewName ] = useState("")
+  const [ password, setPassword ] = useState("")
 
+  const [ buttonLoading, setButtonLoading ] = useState(false)
+  const navigate = useNavigate()
   useEffect(() => {
     if(addMembers.length > 1){
         setNextButtonFlag(true)
@@ -199,11 +252,12 @@ const GroupOptions = ({groupId}) => {
   }, [currentPage])
 
   useEffect(() => {
-    if(currentAddMembers && currentAddMembers.length > 0){
+    if(currentAddMembers || removeMembers){
       setIsLoading(false)
     }
   }, [currentAddMembers])
 
+  const modal = useRef(null)
   return (
     isLoading? (
       <>
@@ -215,10 +269,14 @@ const GroupOptions = ({groupId}) => {
         <div className="options__header">
           <form>
             <div>
-              <label htmlFor="">Change Name</label>
+              <label htmlFor="new__name">Change Name</label>
               <div>
-                <input type="text" />
-                <button>
+                <input 
+                  id='new__name'
+                  type="text" 
+                  onChange={(e) => handleInput(e, setNewName)}
+                />
+                <button onClick={(e) => handleNameChange(e, newName, _sadwv, groupId, navigate)}>
                   <FaArrowRight />
                 </button>
               </div>
@@ -228,7 +286,8 @@ const GroupOptions = ({groupId}) => {
         <div className="member">
           <h1>Add Member</h1>
           <div>
-            {currentAddMembers.map((user) => {
+            {currentAddMembers && 
+            currentAddMembers.map((user) => {
                       return (
                           <AddMember
                           key={`Member${user.friendId}`}
@@ -276,8 +335,24 @@ const GroupOptions = ({groupId}) => {
             </div>
         </div>
         <section className="delete__section">
-          <button className="delete__button">Delete Group</button>
+          <button className="delete__button" onClick={() => toggleModal(modal, true)}>Delete Group</button>
         </section>
+        <dialog className='delete__modal' ref={modal}>
+                <div>
+                  <label id='delete__group'>Confirm Password to Delete</label>
+                  <input type="text" id='delete__group' onChange={(e) => handleInput(e, setPassword)}/>
+                </div>
+                <button onClick={() => handleDelete(groupId, _sadwv, password, setButtonLoading)}>
+                  {buttonLoading? (
+                    <AiOutlineLoading className='button__loading' />
+                  ) : (
+                    <>
+                      Delete
+                    </>
+                  )}
+                </button>
+                <button onClick={() => toggleModal(modal, false)}>Close</button>
+        </dialog>
       </section>
     </>
     )
