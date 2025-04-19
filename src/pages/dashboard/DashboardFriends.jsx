@@ -14,8 +14,8 @@ const getUsers = async (setUsers, setFindLoading, _sadwv) => {
     const payload = await _sadwv()
     const res = await axios.get(`${api}/api/users`, {
       headers: {
-        _sadwv: payload
-      }
+        _sadwv: payload,
+      },
     })
     setUsers(res.data.users)
     setFindLoading(false)
@@ -29,8 +29,8 @@ const getFriends = async (setMyFriends, setMyFriendsLoading, _sadwv) => {
     const payload = await _sadwv()
     const res = await axios.get(`${api}/api/users/friends`, {
       headers: {
-        _sadwv: payload
-      }
+        _sadwv: payload,
+      },
     })
     const friends = res.data.friends.friendsAsUser
     setMyFriends(friends)
@@ -41,7 +41,8 @@ const getFriends = async (setMyFriends, setMyFriendsLoading, _sadwv) => {
 }
 
 const DashboardFriends = () => {
-  const { isAuthenticated, getRefresh, isAuthLoading, _sadwv } = useContext(AuthContext)
+  const { isAuthenticated, getRefresh, isAuthLoading, _sadwv } =
+    useContext(AuthContext)
   const [friendPageFlag, setFriendPageFlag] = useState(true)
   const [users, setUsers] = useState([])
   const [findLoading, setFindLoading] = useState(true)

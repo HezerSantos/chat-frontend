@@ -13,6 +13,8 @@ import api from '../../../config'
 import { AiOutlineLoading } from 'react-icons/ai'
 import MessageGroup from './MessageGroup'
 import { AuthContext } from '../../context/AuthContext'
+import GroupOptions from './GroupOptions'
+import Loading from '../Loading'
 const toggleNavBar = (e, toggleButton, dashboardMain, dashboardNav) => {
   toggleButton.current.classList.toggle('dashboard__button__toggle')
   dashboardMain.current.classList.toggle('dashboard__main__toggle')
@@ -60,9 +62,51 @@ const handleMyFriends = (setFriendPageFlag) => {
   setFriendPageFlag(false)
 }
 
-const handleGroupOptions = (groupId) => {
+const getGroupMembers = async(groupId, _sadwv, setRemoveMembers) => {
+  try{
+    const payload = await _sadwv()
+    const res = await axios.get(`${api}/api/groups/${groupId}/users`, {
+      headers: {
+        _sadwv: payload,
+      }
+    })
+    setRemoveMembers(res.data.groupMembers)
+    return res.data.groupMembers
+  } catch(e){
+    console.error(e)
+  }
+}
 
-} 
+const handleGroupOptions = async(
+  setMessageGroup, 
+  groupId,
+  addMembers,
+  currentAddMembers,
+  removeMembers,
+  setCurrentAddMembers,
+  currentPage,
+  setCurrentPage,
+  getRefresh,
+  _sadwv,
+  setRemoveMembers
+) => {
+  setMessageGroup(<Loading/>)
+  await getRefresh()
+  const members = await getGroupMembers(groupId, _sadwv, setRemoveMembers)
+
+  setMessageGroup(
+    <GroupOptions
+      key={groupId}
+      groupId={groupId}
+      addMembers={addMembers}
+      currentAddMembers={currentAddMembers}
+      removeMembers={members}
+      setCurrentAddMembers={setCurrentAddMembers}
+      currentPage={currentPage}
+      setCurrentPage={setCurrentPage}
+  />
+  )
+}
 
 const DashboardNav = ({
   dashboardMain,
@@ -85,8 +129,14 @@ const DashboardNav = ({
   addMembers,
   removeMembers,
   currentAddMembers,
+  setCurrentAddMembers,
+  setCurrentPage,
+  currentPage,
+  setRemoveMembers,
+  groupsLoading
 }) => {
-  const { ws, setWs } = useContext(AuthContext)
+  const { ws, setWs, getRefresh, _sadwv } = useContext(AuthContext)
+  const [ groupOptionsFlag, setGroupOptionsFlag ] = useState(true)
   const toggleButton = useRef(null)
   const dashboardNav = useRef(null)
 
@@ -95,10 +145,11 @@ const DashboardNav = ({
 
   const groupList = useRef(null)
 
-  const handleGroupClick = (e, groupId, setMessageGroup) => {
+  const handleGroupClick = (e, groupId, setMessageGroup, groupOptionsFlag, setGroupOptionsFlag) => {
     selectedGroup.current?.classList.remove('dashboard__sub__selected')
     setSelectedGroupId(groupId)
     getMessageGroup(e, groupId, setMessageGroup)
+    setGroupOptionsFlag(groupOptionsFlag)
   }
 
   useEffect(() => {
@@ -183,7 +234,7 @@ const DashboardNav = ({
             <>
               <div></div>
               <ul ref={groupList}>
-                {!userGroups ? (
+                {groupsLoading ? (
                   <li className="loading__center">
                     <AiOutlineLoading className="loading" />
                   </li>
@@ -200,7 +251,7 @@ const DashboardNav = ({
                         >
                           <button
                             onClick={(e) =>
-                              handleGroupClick(e, group.id, setMessageGroup)
+                              handleGroupClick(e, group.id, setMessageGroup, true, setGroupOptionsFlag)
                             }
                           >
                             {group.name}
@@ -213,7 +264,7 @@ const DashboardNav = ({
               </ul>
               <div className="dashboard__joined__groups">
                 <ol>
-                  {!joinedGroups ? (
+                  {groupsLoading ? (
                     <></>
                   ) : (
                     <>
@@ -223,9 +274,9 @@ const DashboardNav = ({
                       {joinedGroups.map((group, index) => {
                         return (
                           <li
-                            key={group.groupId}
+                            key={group.group.id}
                             ref={
-                              group.groupId === selectedGroupId
+                              group.group.id === selectedGroupId
                                 ? selectedGroup
                                 : null
                             }
@@ -234,12 +285,14 @@ const DashboardNav = ({
                               onClick={(e) =>
                                 handleGroupClick(
                                   e,
-                                  group.groupId,
-                                  setMessageGroup
+                                  group.group.id,
+                                  setMessageGroup,
+                                  false,
+                                  setGroupOptionsFlag
                                 )
                               }
                             >
-                              {group.name}
+                              {group.group.name}
                             </button>
                           </li>
                         )
@@ -249,11 +302,28 @@ const DashboardNav = ({
                 </ol>
               </div>
               <ul className="dashboard__group__options">
-                <li>
-                  {selectedGroupId && (
-                    <button onClick={(e) => handleGroupOptions()}>Group Options</button>
+                  {groupOptionsFlag && (
+                    <li>
+                    {selectedGroupId && (
+                      <button onClick={(e) => handleGroupOptions(  
+                        setMessageGroup, 
+                        selectedGroupId,
+                        addMembers,
+                        currentAddMembers,
+                        removeMembers,
+                        setCurrentAddMembers,
+                        currentPage,
+                        setCurrentPage,
+                        getRefresh,
+                        _sadwv,
+                        setRemoveMembers
+                        )}
+                      >
+                        Group Options
+                      </button>
+                    )}
+                  </li>
                   )}
-                </li>
               </ul>
             </>
           )}

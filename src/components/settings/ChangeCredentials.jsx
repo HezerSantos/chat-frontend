@@ -38,16 +38,20 @@ const handleSubmit = async (
     const confirmPassword = DOMPurify.sanitize(newConfrimPassword)
     const sVerify = DOMPurify.sanitize(verify)
     const payload = await _sadwv()
-    const res = await axios.put(`${api}/api/users`, {
-      username: username,
-      password: password,
-      confirmPassword: confirmPassword,
-      verify: sVerify,
-    }, {
-      headers: {
-        _sadwv: payload,
+    const res = await axios.put(
+      `${api}/api/users`,
+      {
+        username: username,
+        password: password,
+        confirmPassword: confirmPassword,
+        verify: sVerify,
+      },
+      {
+        headers: {
+          _sadwv: payload,
+        },
       }
-    })
+    )
 
     setNewUsername('')
     setNewPassword('')
@@ -71,7 +75,7 @@ const handleInput = (e, setInput) => {
 }
 
 const ChangeCredentials = () => {
-  const  { _sadwv } = useContext(AuthContext)
+  const { _sadwv } = useContext(AuthContext)
   const modal = useRef(null)
   const [newUsername, setNewUsername] = useState('')
   const [newPassword, setNewPassword] = useState('')

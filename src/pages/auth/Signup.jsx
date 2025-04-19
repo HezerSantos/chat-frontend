@@ -20,20 +20,28 @@ const createUser = async (
   try {
     setIsLoading(true)
     const payload = await _sadwv()
-    const res = await axios.post(`${api}/api/users`, {
-      username: username,
-      password: password,
-      confirmPassword: confirmPassword,
-    }, {
-      headers: {
-        _sadwv: payload,
+    const res = await axios.post(
+      `${api}/api/users`,
+      {
+        username: username,
+        password: password,
+        confirmPassword: confirmPassword,
+      },
+      {
+        headers: {
+          _sadwv: payload,
+        },
       }
-    })
+    )
     console.log(res)
     setIsLoading(false)
     navigate('/')
   } catch (e) {
-    const errors = e.response.data.errors
+    console.error(e)
+    let errors = ['Internal Server Error']
+    if (errors.response) {
+      errors = e.response.data.errors
+    }
     const userNameError = errors
       .filter((error) => error.path === 'username')
       .map((error) => error.msg)
@@ -55,7 +63,7 @@ const handleInput = (e, setInput) => {
 }
 
 const Signup = () => {
-  const  { _sadwv } = useContext(AuthContext)
+  const { _sadwv } = useContext(AuthContext)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')

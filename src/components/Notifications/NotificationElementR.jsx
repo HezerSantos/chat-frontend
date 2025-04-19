@@ -5,16 +5,23 @@ import axios from 'axios'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { AuthContext } from '../../context/AuthContext'
 
-const handleDelete = async (e, senderId, setShown, setDeleteLoading, _sadwv) => {
+const handleDelete = async (
+  e,
+  senderId,
+  setShown,
+  setDeleteLoading,
+  _sadwv
+) => {
   e.preventDefault()
   try {
     setDeleteLoading(true)
     const payload = await _sadwv()
     const res = await axios.delete(
-      `${api}/api/users/${senderId}/friends/request/received`, {
+      `${api}/api/users/${senderId}/friends/request/received`,
+      {
         headers: {
           _sadwv: payload,
-        }
+        },
       }
     )
 
@@ -31,12 +38,13 @@ const handleAdd = async (e, senderId, setShown, setAddLoading, _sadwv) => {
   try {
     setAddLoading(true)
     const payload = await _sadwv()
-    const res = await axios.post(`${api}/api/users/${senderId}/friends`,
+    const res = await axios.post(
+      `${api}/api/users/${senderId}/friends`,
       {},
       {
         headers: {
           _sadwv: payload,
-        }
+        },
       }
     )
 
@@ -49,7 +57,7 @@ const handleAdd = async (e, senderId, setShown, setAddLoading, _sadwv) => {
 }
 
 const NotificationElementR = ({ userId, username, profilePicture = null }) => {
-  const  { _sadwv } = useContext(AuthContext)
+  const { _sadwv } = useContext(AuthContext)
 
   const [shown, setShown] = useState(true)
   const [deleteLoading, setDeleteLoading] = useState(false)
@@ -69,7 +77,9 @@ const NotificationElementR = ({ userId, username, profilePicture = null }) => {
             <button
               disabled={deleteLoading || addLoading}
               className="notification__add"
-              onClick={(e) => handleAdd(e, userId, setShown, setAddLoading, _sadwv)}
+              onClick={(e) =>
+                handleAdd(e, userId, setShown, setAddLoading, _sadwv)
+              }
             >
               {!addLoading ? (
                 <>Add</>

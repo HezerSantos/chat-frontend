@@ -6,7 +6,7 @@ import { AiOutlineLoading } from 'react-icons/ai'
 import api from '../config'
 axios.defaults.withCredentials = true
 function App() {
-  const [ isLoading, setIsLoading ] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   if (import.meta.env.VITE_NODE_ENV === 'dev') {
     useEffect(() => {
       // console.log = () => {};
@@ -25,7 +25,7 @@ function App() {
     }
     getCsrf()
     const interval = setInterval(() => {
-      console.log("New Csrf")
+      console.log('New Csrf')
       getCsrf()
     }, 150000)
 
@@ -34,12 +34,11 @@ function App() {
 
   return (
     <AuthProvider>
-      {!isLoading? (
+      {!isLoading ? (
         <main className="loading__screen">
           <AiOutlineLoading className="loading" />
         </main>
       ) : (
-
         <Outlet />
       )}
     </AuthProvider>

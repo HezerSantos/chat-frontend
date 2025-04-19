@@ -14,13 +14,17 @@ const handleSubmit = async (e, groupId, message, _sadwv) => {
   try {
     const payload = await _sadwv()
     const sanitizedMessage = DOMPurify.sanitize(message)
-    const res = await axios.post(`${api}/api/groups/${groupId}/messages`, {
-      message: sanitizedMessage,
-    }, {
-      headers: {
-        _sadwv: payload,
+    const res = await axios.post(
+      `${api}/api/groups/${groupId}/messages`,
+      {
+        message: sanitizedMessage,
       },
-    })
+      {
+        headers: {
+          _sadwv: payload,
+        },
+      }
+    )
   } catch (e) {
     console.error(e)
   }
@@ -97,7 +101,7 @@ const MessageGroup = ({ groupId }) => {
     socket = new WebSocket('ws://localhost:8080')
 
     socket.onopen = () => {
-      console.log('Connected to Websocket')
+      // console.log('Connected to Websocket')
       socket.send(
         JSON.stringify({
           type: 'Connect',
@@ -135,7 +139,7 @@ const MessageGroup = ({ groupId }) => {
     }
 
     socket.onclose = () => {
-      console.log('Socket Closed')
+      // console.log('Socket Closed')
     }
 
     setWs(socket)

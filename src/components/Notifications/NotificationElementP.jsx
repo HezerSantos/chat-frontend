@@ -14,7 +14,7 @@ const handleDelete = async (e, receiverId, setShown, setIsLoading, _sadwv) => {
       {
         headers: {
           _sadwv: payload,
-        }
+        },
       }
     )
 
@@ -26,7 +26,7 @@ const handleDelete = async (e, receiverId, setShown, setIsLoading, _sadwv) => {
 }
 
 const NotificationElementP = ({ userId, username, profilePicture = null }) => {
-  const  { _sadwv } = useContext(AuthContext)
+  const { _sadwv } = useContext(AuthContext)
   const [shown, setShown] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   return (
@@ -34,7 +34,9 @@ const NotificationElementP = ({ userId, username, profilePicture = null }) => {
       {shown && (
         <form
           className="notification__element"
-          onSubmit={(e) => handleDelete(e, userId, setShown, setIsLoading, _sadwv)}
+          onSubmit={(e) =>
+            handleDelete(e, userId, setShown, setIsLoading, _sadwv)
+          }
         >
           <div className="info__container">
             <img

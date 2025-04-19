@@ -13,8 +13,8 @@ const getRequests = async (setRequest, setPending, setIsLoading, _sadwv) => {
     const payload = await _sadwv()
     const res = await axios.get(`${api}/api/users/friends/request`, {
       headers: {
-        _sadwv: payload
-      }
+        _sadwv: payload,
+      },
     })
     const request = res.data.requests.receivedRequests
     const pending = res.data.requests.sentRequests
@@ -28,7 +28,8 @@ const getRequests = async (setRequest, setPending, setIsLoading, _sadwv) => {
 }
 
 const DashboardNotifications = () => {
-  const { isAuthenticated, getRefresh, isAuthLoading, _sadwv } = useContext(AuthContext)
+  const { isAuthenticated, getRefresh, isAuthLoading, _sadwv } =
+    useContext(AuthContext)
   const dashboardMain = useRef(null)
   const [notificationPageFlag, setNotificationPageFlag] = useState(true)
 

@@ -12,7 +12,7 @@ const deleteFriend = async (e, userId, setShown, setIsLoading, _sadwv) => {
     const res = await axios.delete(`${api}/api/users/${userId}/friends`, {
       headers: {
         _sadwv: payload,
-      }
+      },
     })
     setShown(false)
   } catch (e) {
@@ -22,7 +22,7 @@ const deleteFriend = async (e, userId, setShown, setIsLoading, _sadwv) => {
 }
 
 const FriendElement = ({ userId, username, profilePicture = null }) => {
-  const  { _sadwv } = useContext(AuthContext)
+  const { _sadwv } = useContext(AuthContext)
   const [shown, setShown] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   return (
@@ -39,7 +39,9 @@ const FriendElement = ({ userId, username, profilePicture = null }) => {
           <div>
             <button
               disabled={isLoading}
-              onClick={(e) => deleteFriend(e, userId, setShown, setIsLoading, _sadwv)}
+              onClick={(e) =>
+                deleteFriend(e, userId, setShown, setIsLoading, _sadwv)
+              }
             >
               {!isLoading ? (
                 <>Delete</>

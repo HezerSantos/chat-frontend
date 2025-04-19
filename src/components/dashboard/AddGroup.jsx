@@ -4,18 +4,28 @@ import axios from 'axios'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { AuthContext } from '../../context/AuthContext'
-const handleSubmit = async (e, setGroupName, setIsLoading, setErrors, _sadwv) => {
+const handleSubmit = async (
+  e,
+  setGroupName,
+  setIsLoading,
+  setErrors,
+  _sadwv
+) => {
   e.preventDefault()
   try {
     setIsLoading(true)
     const payload = await _sadwv()
-    const res = await axios.post(`${api}/api/groups`, {
-      groupName: e.target.groupName.value,
-    }, {
-      headers: {
-        _sadwv: payload,
+    const res = await axios.post(
+      `${api}/api/groups`,
+      {
+        groupName: e.target.groupName.value,
+      },
+      {
+        headers: {
+          _sadwv: payload,
+        },
       }
-    })
+    )
 
     setGroupName('')
     setIsLoading(false)
