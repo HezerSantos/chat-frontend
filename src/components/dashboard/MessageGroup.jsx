@@ -9,22 +9,24 @@ const handleInput = (e, setInput) => {
   setInput(e.target.value)
 }
 
-const handleSubmit = async (e, groupId, message, _sadwv) => {
+const handleSubmit = async (e, groupId, message, _sadwv, ws) => {
   e.preventDefault()
   try {
-    const payload = await _sadwv()
-    const sanitizedMessage = DOMPurify.sanitize(message)
-    const res = await axios.post(
-      `${api}/api/groups/${groupId}/messages`,
-      {
-        message: sanitizedMessage,
-      },
-      {
-        headers: {
-          _sadwv: payload,
+    if(ws.readyState === 1){
+      const payload = await _sadwv()
+      const sanitizedMessage = DOMPurify.sanitize(message)
+      const res = await axios.post(
+        `${api}/api/groups/${groupId}/messages`,
+        {
+          message: sanitizedMessage,
         },
-      }
-    )
+        {
+          headers: {
+            _sadwv: payload,
+          },
+        }
+      )
+    }
   } catch (e) {
     console.error(e)
   }
@@ -81,7 +83,7 @@ const sendMessage = async (
       })
     )
 
-    handleSubmit(e, groupId, message, _sadwv)
+    handleSubmit(e, groupId, message, _sadwv, ws)
   }
 
   setMessage('')
@@ -93,56 +95,62 @@ const MessageGroup = ({ groupId }) => {
   const [groupMessages, setGroupMessages] = useState([])
 
   useEffect(() => {
-    let socket
-    if (ws) {
-      ws.close()
-      setWs(null)
-    }
-    socket = new WebSocket('ws://localhost:8080')
 
-    socket.onopen = () => {
-      // console.log('Connected to Websocket')
-      socket.send(
-        JSON.stringify({
-          type: 'Connect',
-          id: userId,
-          username: username,
-          groupId: groupId,
-        })
-      )
-    }
-
-    socket.onmessage = (e) => {
-      const res = JSON.parse(e.data)
-      const resUserId = res.userId
-      const username = res.username
-      const resMessage = res.message
-      const resGroupId = res.groupId
-      const resMessageId = res.messageId
-
-      if (groupId === resGroupId) {
-        const sanitizedMessage = DOMPurify.sanitize(resMessage)
-        setGroupMessages((prev) => {
-          const newGroupMessages = [
-            <MessageBlock
-              key={resMessageId}
-              message={sanitizedMessage}
-              className={userId === resUserId ? 'dashboard__user__message' : ''}
-              username={username}
-            />,
-            ...prev,
-          ]
-
-          return newGroupMessages
-        })
+    const delay = async() => {
+      const payload = await _sadwv()
+      let socket
+      if (ws) {
+        ws.close()
+        setWs(null)
       }
-    }
+      socket = new WebSocket('ws://localhost:8080')
+      
+      socket.onopen = () => {
+        // console.log('Connected to Websocket')
+        socket.send(
+          JSON.stringify({
+            type: 'Connect',
+            id: userId,
+            username: username,
+            groupId: groupId,
+            token: payload
+          })
+        )
+      }
 
-    socket.onclose = () => {
-      // console.log('Socket Closed')
-    }
+      socket.onmessage = (e) => {
+        const res = JSON.parse(e.data)
+        const resUserId = res.userId
+        const username = res.username
+        const resMessage = res.message
+        const resGroupId = res.groupId
+        const resMessageId = res.messageId
 
-    setWs(socket)
+        if (groupId === resGroupId) {
+          const sanitizedMessage = DOMPurify.sanitize(resMessage)
+          setGroupMessages((prev) => {
+            const newGroupMessages = [
+              <MessageBlock
+                key={resMessageId}
+                message={sanitizedMessage}
+                className={userId === resUserId ? 'dashboard__user__message' : ''}
+                username={username}
+              />,
+              ...prev,
+            ]
+
+            return newGroupMessages
+          })
+        }
+      }
+
+      socket.onclose = () => {
+        // console.log('Socket Closed')
+      }
+
+      setWs(socket)
+  }
+    delay()
 
     return () => {
       if (ws) {
