@@ -179,9 +179,18 @@ const handleNameChange = async(e, newName, _sadwv, groupId, navigate) => {
   }
 }
 
-const handleDelete = async(groupId, _sadwv, password, setButtonLoading) => {
+const handleDelete = async(groupId, _sadwv, password, setButtonLoading, setErrors) => {
   try{
     setButtonLoading(true)
+    if(password.length === 0){
+      const error = new Error("Password is Empty");
+      error.response = {
+        data: {
+          errors: [{ msg: "Password is Empty" }]
+        }
+      };
+      throw error;
+    }
     const payload = await _sadwv()
     const res = await axios.delete(`${api}/api/groups/${groupId}`, {
       data: {
@@ -193,6 +202,7 @@ const handleDelete = async(groupId, _sadwv, password, setButtonLoading) => {
     });
     window.location.reload()
   } catch(e) {
+    setErrors(e.response.data.errors.map(error => error.msg))
     setButtonLoading(false)
     console.error(e)
   }
@@ -220,6 +230,8 @@ const GroupOptions = ({groupId}) => {
   const [ password, setPassword ] = useState("")
 
   const [ buttonLoading, setButtonLoading ] = useState(false)
+
+  const [ errors, setErrors ] = useState(null)
   const navigate = useNavigate()
   useEffect(() => {
     if(addMembers.length > 1){
@@ -340,9 +352,21 @@ const GroupOptions = ({groupId}) => {
         <dialog className='delete__modal' ref={modal}>
                 <div>
                   <label id='delete__group'>Confirm Password to Delete</label>
-                  <input type="text" id='delete__group' onChange={(e) => handleInput(e, setPassword)}/>
+                  <input 
+                    type="text" 
+                    id='delete__group' 
+                    onChange={(e) => handleInput(e, setPassword)}
+                    className={errors? 'error__border' : ''}
+                   />
+                   {errors && (
+                      errors.map((error, index) => {
+                        return(
+                          <p key={`e${index}`} className='error'>{error}*</p>
+                        )
+                      })
+                   )}
                 </div>
-                <button onClick={() => handleDelete(groupId, _sadwv, password, setButtonLoading)}>
+                <button onClick={() => handleDelete(groupId, _sadwv, password, setButtonLoading, setErrors)}>
                   {buttonLoading? (
                     <AiOutlineLoading className='button__loading' />
                   ) : (

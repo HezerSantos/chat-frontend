@@ -170,7 +170,11 @@
   width: 50%;
   min-width: 16rem;
   padding: 1rem;
-  background-color: var(--pri__inter__color);
+  background: linear-gradient(
+    to bottom,
+    var(--pri__inter__color) 0%,
+    var(--pri__highlight) 100%
+  );
   border: none;
   border-radius: .5rem;
 
@@ -191,7 +195,7 @@
     color: var(--pri__text);
     font-family: mainText;
     padding: .5rem 1rem .5rem 1rem;
-    background-color: var(--offset__color);
+    background-color: var(--pri__highlight);
     border: none;
     border-radius: .5rem;
 
@@ -210,6 +214,6 @@
   }
 
   & button:last-child{
-    background-color: var(--sec__inter__color);
+    background-color: var(--pri__inter__color);
   }
 }
