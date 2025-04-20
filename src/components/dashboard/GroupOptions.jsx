@@ -333,7 +333,7 @@ const GroupOptions = ({groupId}) => {
         <div className="member">
           <h1>Remove Member</h1>
             <div>
-                {removeMembers.map(user => {
+                {removeMembers && removeMembers.map(user => {
                     return(
                         <RemoveMember
                             key={`Remove${user.user.id}`}

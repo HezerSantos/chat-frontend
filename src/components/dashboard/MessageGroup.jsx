@@ -5,6 +5,7 @@ import axios from 'axios'
 import api from '../../../config'
 import { AuthContext } from '../../context/AuthContext'
 import DOMPurify from 'dompurify'
+import Loading from '../Loading'
 const handleInput = (e, setInput) => {
   setInput(e.target.value)
 }
@@ -32,7 +33,7 @@ const handleSubmit = async (e, groupId, message, _sadwv, ws) => {
   }
 }
 
-const getGroupMessages = async (groupId, setGroupMessages, userId, _sadwv) => {
+const getGroupMessages = async (groupId, setGroupMessages, userId, _sadwv, setIsLoading) => {
   try {
     const payload = await _sadwv()
     const res = await axios.get(`${api}/api/groups/${groupId}/messages`, {
@@ -54,6 +55,7 @@ const getGroupMessages = async (groupId, setGroupMessages, userId, _sadwv) => {
         />
       ))
     )
+    setIsLoading(false)
   } catch (e) {
     console.error(e)
   }
@@ -89,11 +91,12 @@ const MessageGroup = ({ groupId }) => {
   const { userId, username, ws, setWs, _sadwv } = useContext(AuthContext)
   const [message, setMessage] = useState('')
   const [groupMessages, setGroupMessages] = useState([])
+  const [ isLoading, setIsLoading ] = useState(true)
 
   useEffect(() => {
 
     const delay = async() => {
-      await getGroupMessages(groupId, setGroupMessages, userId, _sadwv)
+      await getGroupMessages(groupId, setGroupMessages, userId, _sadwv, setIsLoading)
       const payload = await _sadwv() //Add the csrf later
       let socket
       if (ws) {
@@ -148,41 +151,45 @@ const MessageGroup = ({ groupId }) => {
     }
   }, [])
 
-  // useEffect(() => {
-  //   getGroupMessages(groupId, setGroupMessages, userId, _sadwv)
-  // }, [groupId])
-
   return (
-    <section className="dashboard__messages">
-      <form>
-        <textarea
-          name="message"
-          id=""
-          onChange={(e) => handleInput(e, setMessage)}
-          value={message}
-          className="dashboard__input"
-        ></textarea>
-        <button
-          onClick={(e) =>
-            sendMessage(
-              e,
-              ws,
-              userId,
-              message,
-              setMessage,
-              username,
-              groupId,
-              _sadwv
-            )
-          }
-        >
-          <IoMdSend />
-        </button>
-      </form>
-      {groupMessages.map((message) => {
-        return message
-      })}
-    </section>
+    <>
+      {isLoading? (
+      <>
+        <Loading />
+      </>
+      ) : (
+      <section className="dashboard__messages">
+        <form>
+          <textarea
+            name="message"
+            id=""
+            onChange={(e) => handleInput(e, setMessage)}
+            value={message}
+            className="dashboard__input"
+          ></textarea>
+          <button
+            onClick={(e) =>
+              sendMessage(
+                e,
+                ws,
+                userId,
+                message,
+                setMessage,
+                username,
+                groupId,
+                _sadwv
+              )
+            }
+          >
+            <IoMdSend />
+          </button>
+        </form>
+        {groupMessages.map((message) => {
+          return message
+        })}
+      </section>
+    )}
+    </>
   )
 }
 
