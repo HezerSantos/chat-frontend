@@ -296,7 +296,7 @@ const GroupOptions = ({groupId}) => {
           </form>
         </div>
         <div className="member">
-          <h1>Add Member</h1>
+          <h1>Add FRIENDS</h1>
           <div>
             {currentAddMembers && 
             currentAddMembers.map((user) => {

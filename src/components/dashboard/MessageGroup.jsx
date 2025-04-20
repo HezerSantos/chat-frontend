@@ -71,15 +71,11 @@ const sendMessage = async (
 ) => {
   e.preventDefault()
   if (ws) {
-    // const { id } = await handleSubmit(e, groupId, message)
     ws.send(
       JSON.stringify({
         type: 'Message',
-        id: userId,
         message: message,
-        username: username,
         groupId: groupId,
-        messageId: crypto.randomUUID(),
       })
     )
 
@@ -97,7 +93,8 @@ const MessageGroup = ({ groupId }) => {
   useEffect(() => {
 
     const delay = async() => {
-      const payload = await _sadwv()
+      await getGroupMessages(groupId, setGroupMessages, userId, _sadwv)
+      const payload = await _sadwv() //Add the csrf later
       let socket
       if (ws) {
         ws.close()
@@ -106,14 +103,11 @@ const MessageGroup = ({ groupId }) => {
       socket = new WebSocket('ws://localhost:8080')
       
       socket.onopen = () => {
-        // console.log('Connected to Websocket')
         socket.send(
           JSON.stringify({
             type: 'Connect',
-            id: userId,
-            username: username,
             groupId: groupId,
-            token: payload
+            token: payload //csrf for later simulate headers
           })
         )
       }
@@ -122,26 +116,21 @@ const MessageGroup = ({ groupId }) => {
         const res = JSON.parse(e.data)
         const resUserId = res.userId
         const username = res.username
-        const resMessage = res.message
-        const resGroupId = res.groupId
-        const resMessageId = res.messageId
+        const message = res.message
+        const sanitizedMessage = DOMPurify.sanitize(message)
+        setGroupMessages((prev) => {
+          const newGroupMessages = [
+            <MessageBlock
+              key={crypto.randomUUID()}
+              message={sanitizedMessage}
+              className={userId === resUserId ? 'dashboard__user__message' : ''}
+              username={username}
+            />,
+            ...prev,
+          ]
 
-        if (groupId === resGroupId) {
-          const sanitizedMessage = DOMPurify.sanitize(resMessage)
-          setGroupMessages((prev) => {
-            const newGroupMessages = [
-              <MessageBlock
-                key={resMessageId}
-                message={sanitizedMessage}
-                className={userId === resUserId ? 'dashboard__user__message' : ''}
-                username={username}
-              />,
-              ...prev,
-            ]
-
-            return newGroupMessages
-          })
-        }
+          return newGroupMessages
+        })
       }
 
       socket.onclose = () => {
@@ -159,9 +148,9 @@ const MessageGroup = ({ groupId }) => {
     }
   }, [])
 
-  useEffect(() => {
-    getGroupMessages(groupId, setGroupMessages, userId, _sadwv)
-  }, [groupId])
+  // useEffect(() => {
+  //   getGroupMessages(groupId, setGroupMessages, userId, _sadwv)
+  // }, [groupId])
 
   return (
     <section className="dashboard__messages">
