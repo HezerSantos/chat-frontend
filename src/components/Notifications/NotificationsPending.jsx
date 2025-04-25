@@ -52,7 +52,7 @@ const handlePendingPrev = (
   })
 }
 
-const Pending = ({ users, isLoading }) => {
+const Pending = ({ users, isLoading, setLimitError }) => {
   const [totalPendingPages, setTotalPendingPages] = useState()
   const [currentPendingPage, setCurrentPendingPage] = useState(0)
   const [currentPending, setCurrentPending] = useState([])
@@ -87,6 +87,7 @@ const Pending = ({ users, isLoading }) => {
                     username={user.receiver.username}
                     profilePicture={user.profilePicture}
                     userId={user.receiverId}
+                    setLimitError={setLimitError}
                   />
                 )
               })}

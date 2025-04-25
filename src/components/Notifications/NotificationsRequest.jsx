@@ -52,7 +52,7 @@ const handleRequestPrev = (
   })
 }
 
-const Request = ({ users, isLoading }) => {
+const Request = ({ users, isLoading, setLimitError }) => {
   const [totalRequestPages, setTotalRequestPages] = useState()
   const [currentRequestPage, setCurrentRequestPage] = useState(0)
   const [currentRequest, setCurrentRequest] = useState([])
@@ -86,6 +86,7 @@ const Request = ({ users, isLoading }) => {
                     username={user.sender.username}
                     profilePicture={user.profilePicture}
                     userId={user.senderId}
+                    setLimitError={setLimitError}
                   />
                 )
               })}

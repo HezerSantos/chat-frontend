@@ -4,7 +4,7 @@ import axios from 'axios'
 import api from '../../../config'
 import { AiOutlineLoading } from 'react-icons/ai'
 
-const MyFriends = ({ myFriends, myFriendsLoading }) => {
+const MyFriends = ({ myFriends, myFriendsLoading, setLimitError }) => {
   return (
     <>
       {!myFriendsLoading ? (
@@ -17,6 +17,7 @@ const MyFriends = ({ myFriends, myFriendsLoading }) => {
                 userId={friend.friendId}
                 username={friend.friend.username}
                 profilePicture={friend.friend.profilePicture}
+                setLimitError={setLimitError}
               />
             )
           })}

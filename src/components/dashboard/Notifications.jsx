@@ -95,15 +95,16 @@ const Notifications = ({
   request,
   pending,
   isLoading,
+  setLimitError
 }) => {
   const { getRefresh } = useContext(AuthContext)
 
   return (
     <>
       {notificationPageFlag ? (
-        <Pending users={pending} isLoading={isLoading} />
+        <Pending users={pending} isLoading={isLoading} setLimitError={setLimitError} />
       ) : (
-        <Request users={request} isLoading={isLoading} />
+        <Request users={request} isLoading={isLoading} setLimitError={setLimitError}/>
       )}
     </>
   )

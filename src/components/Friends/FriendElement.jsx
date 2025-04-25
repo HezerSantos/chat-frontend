@@ -4,9 +4,10 @@ import axios from 'axios'
 import api from '../../../config'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { AuthContext } from '../../context/AuthContext'
-const deleteFriend = async (e, userId, setShown, setIsLoading, _sadwv) => {
+const deleteFriend = async (e, userId, setShown, setIsLoading, _sadwv, setLimitError) => {
   e.preventDefault()
   try {
+    setLimitError(false)
     setIsLoading(true)
     const payload = await _sadwv()
     const res = await axios.delete(`${api}/api/users/${userId}/friends`, {
@@ -16,12 +17,15 @@ const deleteFriend = async (e, userId, setShown, setIsLoading, _sadwv) => {
     })
     setShown(false)
   } catch (e) {
+    if(e.status === 429){
+      setLimitError(true)
+    }
     setIsLoading(false)
     console.error(e)
   }
 }
 
-const FriendElement = ({ userId, username, profilePicture = null }) => {
+const FriendElement = ({ userId, username, profilePicture = null, setLimitError }) => {
   const { _sadwv } = useContext(AuthContext)
   const [shown, setShown] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
@@ -40,7 +44,7 @@ const FriendElement = ({ userId, username, profilePicture = null }) => {
             <button
               disabled={isLoading}
               onClick={(e) =>
-                deleteFriend(e, userId, setShown, setIsLoading, _sadwv)
+                deleteFriend(e, userId, setShown, setIsLoading, _sadwv, setLimitError)
               }
             >
               {!isLoading ? (

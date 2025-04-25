@@ -10,10 +10,12 @@ const handleDelete = async (
   senderId,
   setShown,
   setDeleteLoading,
-  _sadwv
+  _sadwv,
+  setLimitError
 ) => {
   e.preventDefault()
   try {
+    setLimitError(false)
     setDeleteLoading(true)
     const payload = await _sadwv()
     const res = await axios.delete(
@@ -28,14 +30,18 @@ const handleDelete = async (
     // console.log(res)
     setShown(false)
   } catch (e) {
+    if(e.status === 429){
+      setLimitError(true)
+    }
     console.error(e)
     setDeleteLoading(false)
   }
 }
 
-const handleAdd = async (e, senderId, setShown, setAddLoading, _sadwv) => {
+const handleAdd = async (e, senderId, setShown, setAddLoading, _sadwv, setLimitError) => {
   e.preventDefault()
   try {
+    setLimitError(false)
     setAddLoading(true)
     const payload = await _sadwv()
     const res = await axios.post(
@@ -51,17 +57,21 @@ const handleAdd = async (e, senderId, setShown, setAddLoading, _sadwv) => {
     // console.log(res)
     setShown(false)
   } catch (e) {
+    if(e.status === 429){
+      setLimitError(true)
+    }
     setAddLoading(false)
     console.error(e)
   }
 }
 
-const NotificationElementR = ({ userId, username, profilePicture = null }) => {
+const NotificationElementR = ({ userId, username, profilePicture = null, setLimitError }) => {
   const { _sadwv } = useContext(AuthContext)
 
   const [shown, setShown] = useState(true)
   const [deleteLoading, setDeleteLoading] = useState(false)
   const [addLoading, setAddLoading] = useState(false)
+
   return (
     <>
       {shown && (
@@ -78,7 +88,7 @@ const NotificationElementR = ({ userId, username, profilePicture = null }) => {
               disabled={deleteLoading || addLoading}
               className="notification__add"
               onClick={(e) =>
-                handleAdd(e, userId, setShown, setAddLoading, _sadwv)
+                handleAdd(e, userId, setShown, setAddLoading, _sadwv, setLimitError)
               }
             >
               {!addLoading ? (
@@ -90,7 +100,7 @@ const NotificationElementR = ({ userId, username, profilePicture = null }) => {
             <button
               disabled={deleteLoading || addLoading}
               onClick={(e) =>
-                handleDelete(e, userId, setShown, setDeleteLoading, _sadwv)
+                handleDelete(e, userId, setShown, setDeleteLoading, _sadwv, setLimitError)
               }
             >
               {!deleteLoading ? (

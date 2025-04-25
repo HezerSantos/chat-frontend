@@ -7,9 +7,10 @@ import { AiOutlineLoading } from 'react-icons/ai'
 import LoginError from '../../errors/loginError'
 import axios from 'axios'
 import api from '../../../config'
-
-const getRequests = async (setRequest, setPending, setIsLoading, _sadwv) => {
+import ErrorMessage from '../../errors/ErrorMessage'
+const getRequests = async (setRequest, setPending, setIsLoading, _sadwv, setLimitError) => {
   try {
+    setLimitError(false)
     const payload = await _sadwv()
     const res = await axios.get(`${api}/api/users/friends/request`, {
       headers: {
@@ -23,6 +24,9 @@ const getRequests = async (setRequest, setPending, setIsLoading, _sadwv) => {
     setPending(pending)
     setIsLoading(false)
   } catch (e) {
+    if(e.status === 429){
+      setLimitError(true)
+    }
     console.error(e)
   }
 }
@@ -36,17 +40,36 @@ const DashboardNotifications = () => {
   const [request, setRequest] = useState([])
   const [pending, setPending] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [ limitError, setLimitError ] = useState(false)
+  
   useEffect(() => {
     const delay = async () => {
       await getRefresh()
-      getRequests(setRequest, setPending, setIsLoading, _sadwv)
+      getRequests(setRequest, setPending, setIsLoading, _sadwv, setLimitError)
     }
     delay()
   }, [])
+
+  useEffect(() => {
+    let timeout
+    if(limitError){
+      timeout = setTimeout(() => {
+        setLimitError(false)
+      }, 5000)
+    }
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [limitError])
+
+
   return (
     <>
       {isAuthenticated ? (
         <main className="dashboard__main" ref={dashboardMain}>
+          {limitError && (
+            <ErrorMessage />
+          )}
           <DashboardNav
             dashboardMain={dashboardMain}
             notifications={true}
@@ -58,6 +81,7 @@ const DashboardNotifications = () => {
             request={request}
             pending={pending}
             isLoading={isLoading}
+            setLimitError={setLimitError}
           />
         </main>
       ) : (

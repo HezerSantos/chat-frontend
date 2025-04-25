@@ -4,9 +4,10 @@ import axios from 'axios'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { useState, useContext } from 'react'
 import { AuthContext } from '../../context/AuthContext'
-const handleDelete = async (e, receiverId, setShown, setIsLoading, _sadwv) => {
+const handleDelete = async (e, receiverId, setShown, setIsLoading, _sadwv, setLimitError) => {
   e.preventDefault()
   try {
+    setLimitError(false)
     setIsLoading(true)
     const payload = await _sadwv()
     const res = await axios.delete(
@@ -20,12 +21,15 @@ const handleDelete = async (e, receiverId, setShown, setIsLoading, _sadwv) => {
 
     setShown(false)
   } catch (e) {
+    if(e.status === 429){
+      setLimitError(true)
+    }
     setIsLoading(false)
     console.error(e)
   }
 }
 
-const NotificationElementP = ({ userId, username, profilePicture = null }) => {
+const NotificationElementP = ({ userId, username, profilePicture = null, setLimitError }) => {
   const { _sadwv } = useContext(AuthContext)
   const [shown, setShown] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
@@ -35,7 +39,7 @@ const NotificationElementP = ({ userId, username, profilePicture = null }) => {
         <form
           className="notification__element"
           onSubmit={(e) =>
-            handleDelete(e, userId, setShown, setIsLoading, _sadwv)
+            handleDelete(e, userId, setShown, setIsLoading, _sadwv, setLimitError)
           }
         >
           <div className="info__container">
