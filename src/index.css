@@ -31,6 +31,8 @@
   --offset__color: #b79855;
   --offset__highlight: #caaa63;
   --error: #a91b1b;
+  --error__message: rgb(248, 192, 192);
+  --error__bar: #cc6262;
   --shadow: rgba(0, 0, 0, 0.5);
   --pri__text: white;
   --sec__text: #b79855;
@@ -131,5 +133,48 @@ body {
 
   &:hover {
     background-color: var(--offset__highlight);
+  }
+}
+
+
+.error__message{
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1% 0 1%;
+  bottom: 5%;
+  left: 50%;
+  transform: translate(-50%, -5%);
+  width: 45%;
+  min-width: 18rem;
+  height: 5rem;
+  background-color: var(--error__message);
+  border: 1px solid var(--error);
+  border-radius: 1rem;
+  z-index: 6 !important;
+  & > div.loading__bar{
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, -5%);
+    height: .125rem;
+    background-color: var(--error__bar);
+    animation: error__message 5s ease-in-out 1;
+  }
+
+  & > p{
+    font-family: subText !important;
+  }
+}
+
+@keyframes error__message {
+  0%{
+    width: 90%;
+    opacity: 1;
+  }
+  100%{
+    width: 0;
+    display: none;
   }
 }

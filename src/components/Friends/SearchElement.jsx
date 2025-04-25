@@ -4,8 +4,9 @@ import api from '../../../config'
 import { AuthContext } from '../../context/AuthContext'
 import { useContext, useState } from 'react'
 import { AiOutlineLoading } from 'react-icons/ai'
-const handleSubmit = async(userId, _sadwv, setIsLoading, setIsDisabled, setButtonText) => {
+const handleSubmit = async(userId, _sadwv, setIsLoading, setIsDisabled, setButtonText, setLimitError) => {
   try{  
+    setLimitError(false)
     setIsLoading(true)
     const payload = await _sadwv()
     const res = await axios.post(`${api}/api/users/${userId}/friends/request`, {}, {
@@ -17,13 +18,17 @@ const handleSubmit = async(userId, _sadwv, setIsLoading, setIsDisabled, setButto
     setButtonText("Sent")
     setIsLoading(false)
   } catch(e){
+    
+    if(e.status === 429){
+      setLimitError(true)
+    }
     setIsLoading(false)
     console.error(e)
   }
 }
 
 
-const SearchElement = ({ username, userId, profilePicture = null }) => {
+const SearchElement = ({ username, userId, profilePicture = null, setLimitError }) => {
     const { _sadwv } = useContext(AuthContext)
     const [ isLoading, setIsLoading ] = useState(false)
     const [ isDisabled, setIsDisabled ] = useState(false)
@@ -34,7 +39,7 @@ const SearchElement = ({ username, userId, profilePicture = null }) => {
         <img src={profilePicture ? profilePicture : defaultProfile} alt="" />
         <p>@{username}</p>
         <button 
-          onClick={() => handleSubmit(userId, _sadwv, setIsLoading, setIsDisabled, setButtonText)}
+          onClick={() => handleSubmit(userId, _sadwv, setIsLoading, setIsDisabled, setButtonText, setLimitError)}
           disabled={isDisabled}
         >
           {isLoading? (

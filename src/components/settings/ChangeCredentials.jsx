@@ -28,10 +28,12 @@ const handleSubmit = async (
   setVerify,
   modal,
   setIsLoading,
-  _sadwv
+  _sadwv,
+  setLimitError
 ) => {
   e.preventDefault()
   try {
+    setLimitError(false)
     setIsLoading(true)
     const username = DOMPurify.sanitize(newUsername)
     const password = DOMPurify.sanitize(newPassword)
@@ -62,7 +64,11 @@ const handleSubmit = async (
     setIsLoading(false)
   } catch (e) {
     let errors = e.response.data.errors
-
+    if(e.status == 429){
+      setIsLoading(false)
+      setLimitError(true)
+      return
+    }
     errors = errors.map((error) => error.msg)
     setErrors(errors)
     console.error(e)
@@ -74,7 +80,7 @@ const handleInput = (e, setInput) => {
   setInput(e.target.value)
 }
 
-const ChangeCredentials = () => {
+const ChangeCredentials = ({setLimitError}) => {
   const { _sadwv } = useContext(AuthContext)
   const modal = useRef(null)
   const [newUsername, setNewUsername] = useState('')
@@ -83,6 +89,9 @@ const ChangeCredentials = () => {
   const [verify, setVerify] = useState('')
   const [errors, setErrors] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+
+
+
 
   return (
     <>
@@ -162,7 +171,8 @@ const ChangeCredentials = () => {
                       setVerify,
                       modal,
                       setIsLoading,
-                      _sadwv
+                      _sadwv,
+                      setLimitError
                     )
                   }
                 >

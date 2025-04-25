@@ -5,6 +5,7 @@ import axios from 'axios'
 import api from '../../../config'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { AuthContext } from '../../context/AuthContext'
+import ErrorMessage from '../../errors/ErrorMessage'
 const createUser = async (
   e,
   setUsernameError,
@@ -14,10 +15,12 @@ const createUser = async (
   username,
   password,
   confirmPassword,
-  _sadwv
+  _sadwv,
+  setLimitError
 ) => {
   e.preventDefault()
   try {
+    setLimitError(false)
     setIsLoading(true)
     const payload = await _sadwv()
     const res = await axios.post(
@@ -38,10 +41,17 @@ const createUser = async (
     navigate('/')
   } catch (e) {
     console.error(e)
+    if(e.status === 429){
+      setLimitError(true)
+      setIsLoading(false)
+      return
+    }
     let errors = ['Internal Server Error']
-    if (errors.response) {
+    if (e.response) {
       errors = e.response.data.errors
     }
+
+    
     const userNameError = errors
       .filter((error) => error.path === 'username')
       .map((error) => error.msg)
@@ -63,6 +73,7 @@ const handleInput = (e, setInput) => {
 }
 
 const Signup = () => {
+  const [ limitError, setLimitError ] = useState(false)
   const { _sadwv } = useContext(AuthContext)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -76,6 +87,18 @@ const Signup = () => {
   const confirmPasswordInput = useRef(null)
 
   const navigate = useNavigate()
+  useEffect(() => {
+    let timeout
+    if(limitError){
+      timeout = setTimeout(() => {
+        setLimitError(false)
+      }, 5000)
+    }
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [limitError])
+
   useEffect(() => {
     if (usernameError) {
       if (usernameError.length > 0) {
@@ -99,6 +122,9 @@ const Signup = () => {
   }, [passwordError])
   return (
     <main className="index__auth">
+      {limitError && (
+        <ErrorMessage />
+      )}
       <section className="index__header__container">
         <div>
           <h1>LunarLink</h1>
@@ -118,7 +144,8 @@ const Signup = () => {
               username,
               password,
               confirmPassword,
-              _sadwv
+              _sadwv,
+              setLimitError
             )
           }
         >

@@ -5,7 +5,7 @@ import axios from 'axios'
 import api from '../../../config'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { AuthContext } from '../../context/AuthContext'
-
+import ErrorMessage from '../../errors/ErrorMessage'
 const login = async (
   e,
   setLoginError,
@@ -14,10 +14,12 @@ const login = async (
   userLogin,
   username,
   password,
-  _sadwv
+  _sadwv,
+  setLimitError
 ) => {
   e.preventDefault()
   try {
+    setLimitError(false)
     setIsLoading(true)
     const payload = await _sadwv()
     const res = await axios.post(
@@ -39,8 +41,14 @@ const login = async (
   } catch (err) {
     console.error(err)
     let errors = ['Internal Server Error']
-    if (err.response) {
-      errors = err.response.data.errors[0]
+    if (err.response && err.status !== 429) {
+      errors = err.response.data.errors.map(error => error.msg)
+    }
+
+    if(err.status === 429){
+      setLimitError(true)
+      setIsLoading(false)
+      return
     }
     setLoginError(errors)
     setIsLoading(false)
@@ -58,12 +66,23 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
-
+  const [ limitError, setLimitError ] = useState(false)
   const usernameInput = useRef(null)
   const passwordInput = useRef(null)
 
   const navigate = useNavigate()
 
+  useEffect(() => {
+    let timeout
+    if(limitError){
+      timeout = setTimeout(() => {
+        setLimitError(false)
+      }, 5000)
+    }
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [limitError])
   useEffect(() => {
     if (loginError) {
       usernameInput.current.classList.add('error__border')
@@ -75,6 +94,9 @@ const Login = () => {
   }, [loginError])
   return (
     <main className="index__auth">
+      {limitError && (
+        <ErrorMessage />
+      )}
       <section className="index__header__container">
         <div>
           <h1>LunarLink</h1>
@@ -93,7 +115,8 @@ const Login = () => {
               userLogin,
               username,
               password,
-              _sadwv
+              _sadwv,
+              setLimitError
             )
           }
         >

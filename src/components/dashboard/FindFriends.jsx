@@ -93,6 +93,7 @@ const FindFriends = ({
   findLoading,
   suggestedUsers,
   setMaxUsers,
+  setLimitError
 }) => {
   const { getRefresh } = useContext(AuthContext)
   const [searchedUsers, setSearchedUsers] = useState([])
@@ -139,6 +140,7 @@ const FindFriends = ({
                     username={user.username}
                     profilePicture={user.profilePicture}
                     userId={user.id}
+                    setLimitError={setLimitError}
                   />
                 )
               })}
@@ -158,6 +160,7 @@ const FindFriends = ({
                       username={user.username}
                       userId={user.id}
                       profilePicture={user.profilePicture}
+                      setLimitError={setLimitError}
                     />
                   )
                 })}

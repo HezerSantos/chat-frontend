@@ -9,8 +9,10 @@ import MyFriends from '../../components/Friends/MyFriends'
 import _ from 'lodash'
 import axios from 'axios'
 import api from '../../../config'
-const getUsers = async (setUsers, setFindLoading, _sadwv) => {
+import ErrorMessage from '../../errors/ErrorMessage'
+const getUsers = async (setUsers, setFindLoading, _sadwv, setLimitError) => {
   try {
+    setLimitError(false)
     const payload = await _sadwv()
     const res = await axios.get(`${api}/api/users`, {
       headers: {
@@ -20,12 +22,16 @@ const getUsers = async (setUsers, setFindLoading, _sadwv) => {
     setUsers(res.data.users)
     setFindLoading(false)
   } catch (e) {
+    if(e.status === 429){
+      setLimitError(true)
+    }
     console.error(e)
   }
 }
 
-const getFriends = async (setMyFriends, setMyFriendsLoading, _sadwv) => {
+const getFriends = async (setMyFriends, setMyFriendsLoading, _sadwv, setLimitError) => {
   try {
+    setLimitError(false)
     const payload = await _sadwv()
     const res = await axios.get(`${api}/api/users/friends`, {
       headers: {
@@ -36,6 +42,9 @@ const getFriends = async (setMyFriends, setMyFriendsLoading, _sadwv) => {
     setMyFriends(friends)
     setMyFriendsLoading(false)
   } catch (e) {
+    if(e.status === 429){
+      setLimitError(true)
+    }
     console.error(e)
   }
 }
@@ -51,12 +60,13 @@ const DashboardFriends = () => {
   const dashboardMain = useRef(null)
   const [myFriends, setMyFriends] = useState([])
   const [myFriendsLoading, setMyFriendsLoading] = useState(true)
+  const [ limitError, setLimitError ] = useState(false)
 
   useEffect(() => {
     const delay = async () => {
       await getRefresh()
-      getUsers(setUsers, setFindLoading, _sadwv)
-      getFriends(setMyFriends, setMyFriendsLoading, _sadwv)
+      getUsers(setUsers, setFindLoading, _sadwv, setLimitError)
+      getFriends(setMyFriends, setMyFriendsLoading, _sadwv, setLimitError)
     }
 
     const initiateMaxUsers = async () => {
@@ -82,10 +92,25 @@ const DashboardFriends = () => {
     setSuggestedUsers(randomSuggested.slice(0, maxUsers).map((user) => user))
   }, [maxUsers])
 
+  useEffect(() => {
+    let timeout
+    if(limitError){
+      timeout = setTimeout(() => {
+        setLimitError(false)
+      }, 5000)
+    }
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [limitError])
+
   return (
     <>
       {isAuthenticated ? (
         <main className="dashboard__main" ref={dashboardMain}>
+          {limitError && (
+            <ErrorMessage />
+          )}
           <DashboardNav
             dashboardMain={dashboardMain}
             friends={true}
@@ -99,11 +124,13 @@ const DashboardFriends = () => {
               findLoading={findLoading}
               suggestedUsers={suggestedUsers}
               setMaxUsers={setMaxUsers}
+              setLimitError={setLimitError}
             />
           ) : (
             <MyFriends
               myFriends={myFriends}
               myFriendsLoading={myFriendsLoading}
+              setLimitError={setLimitError}
             />
           )}
         </main>
