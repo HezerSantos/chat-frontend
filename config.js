@@ -1,6 +1,6 @@
 const config = {
   production: {
-    apiUrl: 'https://blog-backend-production-6a28.up.railway.app',
+    apiUrl: import.meta.env.API_URL,
   },
   development: {
     apiUrl: 'http://localhost:8080',

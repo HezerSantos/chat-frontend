@@ -7,11 +7,11 @@ import api from '../config'
 axios.defaults.withCredentials = true
 function App() {
   const [isLoading, setIsLoading] = useState(false)
-  if (import.meta.env.VITE_NODE_ENV === 'dev') {
+  if (import.meta.env.VITE_NODE_ENV === 'production') {
     useEffect(() => {
       // console.log = () => {};
       // console.warn = () => {};
-      // console.error = () => {};
+      console.error = () => {};
       // console.info = () => {};
       // console.debug = () => {};
     }, [])
