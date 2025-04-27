@@ -6,11 +6,13 @@ import api from '../../../config'
 import { AuthContext } from '../../context/AuthContext'
 import DOMPurify from 'dompurify'
 import Loading from '../Loading'
+import ErrorMessage from '../../errors/ErrorMessage'
+
 const handleInput = (e, setInput) => {
   setInput(e.target.value)
 }
 
-const handleSubmit = async (e, groupId, message, _sadwv, ws) => {
+const handleSubmit = async (e, groupId, message, _sadwv, ws, setLimitError) => {
   e.preventDefault()
   try {
     if(ws.readyState === 1){
@@ -29,6 +31,9 @@ const handleSubmit = async (e, groupId, message, _sadwv, ws) => {
       )
     }
   } catch (e) {
+    if(e.status === 429){
+      setLimitError(true)
+    }
     console.error(e)
   }
 }
@@ -69,7 +74,8 @@ const sendMessage = async (
   setMessage,
   username,
   groupId,
-  _sadwv
+  _sadwv,
+  setLimitError
 ) => {
   e.preventDefault()
   if (ws) {
@@ -81,7 +87,7 @@ const sendMessage = async (
       })
     )
 
-    handleSubmit(e, groupId, message, _sadwv, ws)
+    handleSubmit(e, groupId, message, _sadwv, ws, setLimitError)
   }
 
   setMessage('')
@@ -92,6 +98,21 @@ const MessageGroup = ({ groupId }) => {
   const [message, setMessage] = useState('')
   const [groupMessages, setGroupMessages] = useState([])
   const [ isLoading, setIsLoading ] = useState(true)
+  const [ limitError, setLimitError ] = useState(false)
+
+  useEffect(() => {
+    let timeout
+    if(limitError){
+      timeout = setTimeout(() => {
+        setLimitError(false)
+        setGroupsLoading(false)
+      }, 5000)
+    }
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [limitError])
+
 
   useEffect(() => {
 
@@ -159,6 +180,9 @@ const MessageGroup = ({ groupId }) => {
       </>
       ) : (
       <section className="dashboard__messages">
+        {limitError && (
+            <ErrorMessage />
+        )}
         <form>
           <textarea
             name="message"
@@ -178,7 +202,8 @@ const MessageGroup = ({ groupId }) => {
                 setMessage,
                 username,
                 groupId,
-                _sadwv
+                _sadwv,
+                setLimitError
               )
             }
           >
