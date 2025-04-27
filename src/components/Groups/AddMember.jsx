@@ -4,8 +4,9 @@ import axios from 'axios'
 import { AuthContext } from '../../context/AuthContext'
 import { useContext, useState } from 'react'
 import { AiOutlineLoading } from 'react-icons/ai'
-const handleAddMember = async(groupId, userId, _sadwv, setIsDisabled, setIsLoading, setButtonText) => {
+const handleAddMember = async(groupId, userId, _sadwv, setIsDisabled, setIsLoading, setButtonText, setLimitError) => {
   try{
+    setLimitError(false)
     setIsLoading(true)
     const payload = await _sadwv()
     const res = await axios.post(`${api}/api/groups/${groupId}/users/${userId}`, {}, {
@@ -17,12 +18,15 @@ const handleAddMember = async(groupId, userId, _sadwv, setIsDisabled, setIsLoadi
     setButtonText("Added")
     setIsLoading(false)
   } catch(e){
+    if(e.status === 429){
+      setLimitError(true)
+    }
     setIsLoading(false)
     console.error(e)
   }
 }
 
-const AddMember = ({ userId, username, profilePicture, groupId }) => {
+const AddMember = ({ userId, username, profilePicture, groupId, setLimitError }) => {
   const { _sadwv } = useContext(AuthContext)
   const [ isDisabled, setIsDisabled ] = useState(false)
   const [ isLoading, setIsLoading ] = useState(false)
@@ -36,7 +40,7 @@ const AddMember = ({ userId, username, profilePicture, groupId }) => {
         </div>
         <button 
           disabled={isDisabled} 
-          onClick={() => handleAddMember(groupId, userId, _sadwv, setIsDisabled, setIsLoading, setButtonText)}
+          onClick={() => handleAddMember(groupId, userId, _sadwv, setIsDisabled, setIsLoading, setButtonText, setLimitError)}
         >
           {isLoading? (
             <AiOutlineLoading className='button__loading'/>

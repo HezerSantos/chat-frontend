@@ -9,6 +9,7 @@ import axios from 'axios'
 import api from '../../../config'
 import MessageGroup from '../../components/dashboard/MessageGroup'
 import GroupOptions from '../../components/dashboard/GroupOptions'
+import ErrorMessage from '../../errors/ErrorMessage'
 const getUserGroups = async (
   setUserGroups,
   setMessageGroup,
@@ -16,8 +17,11 @@ const getUserGroups = async (
   setJoinedGroups,
   setIsEmpty,
   _sadwv,
+  setLimitError,
+  setGroupsLoading
 ) => {
   try {
+    setLimitError(false)
     const payload = await _sadwv()
     const res = await axios.get(`${api}/api/groups`, {
       headers: {
@@ -39,6 +43,10 @@ const getUserGroups = async (
       return res.data.userGroups[0].id
     }
   } catch (e) {
+    if(e.status === 429){
+      setLimitError(true)
+      setGroupsLoading(true)
+    }
     console.error(e)
   }
 }
@@ -62,6 +70,7 @@ const DashboardMessageGroup = () => {
   const dashboardMain = useRef(null)
 
   const [ groupsLoading, setGroupsLoading ] = useState(true)
+  const [ limitError, setLimitError ] = useState(false)
   useEffect(() => {
     const delay = async () => {
       await getRefresh()
@@ -72,6 +81,8 @@ const DashboardMessageGroup = () => {
         setJoinedGroups,
         setIsEmpty,
         _sadwv,
+        setLimitError,
+        setGroupsLoading
       )
       if (id){
         setSelectedGroupId(id)
@@ -81,11 +92,27 @@ const DashboardMessageGroup = () => {
     delay()
   }, [])
 
+  useEffect(() => {
+    let timeout
+    if(limitError){
+      timeout = setTimeout(() => {
+        setLimitError(false)
+        setGroupsLoading(false)
+      }, 5000)
+    }
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [limitError])
+
 
   return (
     <>
       {isAuthenticated ? (
         <main className="dashboard__main" ref={dashboardMain}>
+          {limitError && (
+            <ErrorMessage />
+          )}
           <DashboardNav
             dashboardMain={dashboardMain}
             messagePage={true}

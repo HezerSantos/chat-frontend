@@ -11,6 +11,7 @@ import api from '../../../config'
 import Loading from '../Loading'
 import { useNavigate } from 'react-router-dom'
 import { AiOutlineLoading } from 'react-icons/ai'
+import ErrorMessage from '../../errors/ErrorMessage'
 const users = [
 //   {
 //     username: 'Bob',
@@ -159,9 +160,10 @@ const handleInput = (e, setInput) => {
   setInput(e.target.value)
 }
 
-const handleNameChange = async(e, newName, _sadwv, groupId, navigate) => {
+const handleNameChange = async(e, newName, _sadwv, groupId, navigate, setLimitError) => {
   e.preventDefault()
   try{
+    setLimitError(false)
     if(newName.trim().length === 0){
       return
     }
@@ -175,12 +177,16 @@ const handleNameChange = async(e, newName, _sadwv, groupId, navigate) => {
     })
     window.location.reload()
   } catch(e){
+    if(e.status === 429){
+      setLimitError(true)
+    }
     console.error(e)
   }
 }
 
-const handleDelete = async(groupId, _sadwv, password, setButtonLoading, setErrors) => {
+const handleDelete = async(groupId, _sadwv, password, setButtonLoading, setErrors, setLimitError) => {
   try{
+    setLimitError(false)
     setButtonLoading(true)
     if(password.length === 0){
       const error = new Error("Password is Empty");
@@ -202,6 +208,11 @@ const handleDelete = async(groupId, _sadwv, password, setButtonLoading, setError
     });
     window.location.reload()
   } catch(e) {
+    if(e.status === 429){
+      setLimitError(true)
+      setButtonLoading(false)
+      return
+    }
     setErrors(e.response.data.errors.map(error => error.msg))
     setButtonLoading(false)
     console.error(e)
@@ -228,7 +239,7 @@ const GroupOptions = ({groupId}) => {
   const [ isLoading, setIsLoading ] = useState(true)
   const [ newName, setNewName ] = useState("")
   const [ password, setPassword ] = useState("")
-
+  const [ limitError, setLimitError ] = useState(false)
   const [ buttonLoading, setButtonLoading ] = useState(false)
 
   const [ errors, setErrors ] = useState(null)
@@ -270,6 +281,20 @@ const GroupOptions = ({groupId}) => {
   }, [currentAddMembers])
 
   const modal = useRef(null)
+
+  useEffect(() => {
+    let timeout
+    if(limitError){
+      timeout = setTimeout(() => {
+        setLimitError(false)
+        setGroupsLoading(false)
+      }, 5000)
+    }
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [limitError])
+
   return (
     isLoading? (
       <>
@@ -278,6 +303,9 @@ const GroupOptions = ({groupId}) => {
     ) : (
       <>
       <section className="group__options">
+          {limitError && (
+            <ErrorMessage />
+          )}
         <div className="options__header">
           <form>
             <div>
@@ -288,7 +316,7 @@ const GroupOptions = ({groupId}) => {
                   type="text" 
                   onChange={(e) => handleInput(e, setNewName)}
                 />
-                <button onClick={(e) => handleNameChange(e, newName, _sadwv, groupId, navigate)}>
+                <button onClick={(e) => handleNameChange(e, newName, _sadwv, groupId, navigate, setLimitError)}>
                   <FaArrowRight />
                 </button>
               </div>
@@ -307,6 +335,7 @@ const GroupOptions = ({groupId}) => {
                           username={user.friend.username}
                           profilePicture={user.profilePicture}
                           groupId={groupId}
+                          setLimitError={setLimitError}
                           />
                       )
               })}
@@ -341,6 +370,7 @@ const GroupOptions = ({groupId}) => {
                             username={user.user.username}
                             profilePicture={user.user.profilePicture}
                             groupId={groupId}
+                            setLimitError={setLimitError}
                         />
                     )
                 })}
@@ -366,7 +396,7 @@ const GroupOptions = ({groupId}) => {
                       })
                    )}
                 </div>
-                <button onClick={() => handleDelete(groupId, _sadwv, password, setButtonLoading, setErrors)}>
+                <button onClick={() => handleDelete(groupId, _sadwv, password, setButtonLoading, setErrors, setLimitError)}>
                   {buttonLoading? (
                     <AiOutlineLoading className='button__loading' />
                   ) : (

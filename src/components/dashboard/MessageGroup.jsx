@@ -168,6 +168,7 @@ const MessageGroup = ({ groupId }) => {
             className="dashboard__input"
           ></textarea>
           <button
+            disabled={!message}
             onClick={(e) =>
               sendMessage(
                 e,
