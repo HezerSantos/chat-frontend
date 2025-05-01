@@ -1,6 +1,6 @@
 const config = {
   production: {
-    apiUrl: import.meta.env.API_URL,
+    apiUrl: 'lunarlink-api.hallowedvisions.com',
   },
   development: {
     apiUrl: 'http://localhost:8080',
