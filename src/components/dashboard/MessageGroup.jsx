@@ -124,7 +124,7 @@ const MessageGroup = ({ groupId }) => {
         ws.close()
         setWs(null)
       }
-      socket = new WebSocket('ws://localhost:8080')
+      socket = new WebSocket('wss://lunarlink-api.hallowedvisions.com')
       
       socket.onopen = () => {
         socket.send(
