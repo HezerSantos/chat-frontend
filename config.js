@@ -1,6 +1,6 @@
 const config = {
   production: {
-    apiUrl: 'lunarlink-api.hallowedvisions.com',
+    apiUrl: 'https://lunarlink-api.hallowedvisions.com',
   },
   development: {
     apiUrl: 'http://localhost:8080',
