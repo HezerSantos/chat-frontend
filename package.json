@@ -6,7 +6,7 @@
   "scripts": {
     "format": "prettier --write .",
     "commit": "sh -c 'git add -A && git commit -m \"$0\" && git push'",
-    "start": "npx http-server ./dist --fallback /index.html",
+    "start": "npx http-server ./dist",
     "dev": "vite",
     "build": "vite build && npm run obfuscate",
     "obfuscate": "javascript-obfuscator dist --output dist --compact true --self-defending true --control-flow-flattening true --rename-globals true",
@@ -39,7 +39,7 @@
     "@testing-library/react": "^16.2.0",
     "@types/react": "^18.3.20",
     "@types/react-dom": "^18.3.5",
-    "@vitejs/plugin-react": "^4.4.1",
+    "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.23.0",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.2.0",
