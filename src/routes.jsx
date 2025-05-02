@@ -29,15 +29,15 @@ const routes = [
         element: <DashboardAddGroup />,
       },
       {
-        path: 'dashboard/friends',
+        path: '/dashboard/friends',
         element: <DashboardFriends />,
       },
       {
-        path: 'dashboard/notifications',
+        path: '/dashboard/notifications',
         element: <DashboardNotifications />,
       },
       {
-        path: 'dashboard/settings',
+        path: '/dashboard/settings',
         element: <DashboardSettings />,
       },
     ],
