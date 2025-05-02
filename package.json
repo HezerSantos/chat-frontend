@@ -6,7 +6,7 @@
   "scripts": {
     "format": "prettier --write .",
     "commit": "sh -c 'git add -A && git commit -m \"$0\" && git push'",
-    "start": "npx http-server ./dist",
+    "start": "npx http-server ./dist -c-1 --fallback /index.html",
     "dev": "vite",
     "build": "vite build && npm run obfuscate",
     "obfuscate": "javascript-obfuscator dist --output dist --compact true --self-defending true --control-flow-flattening true --rename-globals true",
